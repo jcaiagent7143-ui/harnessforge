@@ -1,0 +1,19 @@
+# Sample tasks for the workflow-agent blueprint.
+# Replace with project-specific tasks before shipping.
+
+defaults:
+  must_have_tool_log: true
+  must_have_idempotent_marker: true
+
+tasks:
+  - task: "Fetch the latest README from <repo>, summarize, write to /tmp/summary.md"
+    expected_steps: 3
+    expected_tools: ["fetch", "filesystem"]
+
+  - task: "Find all .env.example files in <dir> and merge into a single .env.unified"
+    expected_steps: 4
+    expected_tools: ["filesystem", "shell"]
+
+  - task: "Open a PR on <repo> bumping the version in pyproject.toml from 1.0 to 1.1"
+    expected_steps: 5
+    expected_tools: ["github", "filesystem"]

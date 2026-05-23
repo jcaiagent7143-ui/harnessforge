@@ -1,0 +1,33 @@
+name: finance-agent
+version: 1.0.0
+display_name: "Finance / Market Data Agent"
+description: "Market data + portfolio analysis. Read-only by default; placing orders or moving money requires explicit human approval."
+agent_type: finance
+suitable_for:
+  project_types: [cli, library, web-api]
+  languages: [python]
+recommended_mcps:
+  - filesystem
+  - fetch
+  - time
+  - postgres
+memory_schemas:
+  - conversation
+  - positions
+  - signals
+skills:
+  - fetch-market-data
+  - compute-technicals
+  - screen-positions
+  - flag-attention
+generated_files:
+  - { path: AGENTS.md,                template: AGENTS.md.j2 }
+  - { path: SOUL.md,                  template: SOUL.md.j2 }
+  - { path: TOOLS.md,                 template: TOOLS.md.j2 }
+  - { path: MEMORY.md,                template: MEMORY.md.j2 }
+  - { path: scripts/test_task.sh,     template: test_task.sh.j2, mode: 493 }
+validators:
+  - { name: structure,           module: check_structure,           description: "Every generated file present and parses." }
+  - { name: tests,               module: check_tests,               description: "Project test_command exits 0." }
+  - { name: no_trades_without_gate, module: check_no_trades_without_gate, description: "Code that places orders is gated by explicit human approval." }
+eval_set: eval/questions.yaml

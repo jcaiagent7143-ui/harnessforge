@@ -1,0 +1,24 @@
+# MEMORY.md — {{ profile.name }}
+
+> _Build-mode memory: minimal. Most of what you need is in the code._
+
+## Layer 1 — Session memory
+
+In-flight conversation only. Nothing to persist across sessions for a normal CLI/library project.
+
+## Layer 2 — Change log
+
+Major design decisions you make in this project should be recorded as:
+
+- A clear commit message ("Adopt `unittest` (not pytest) per maintainer's call in #12")
+- A short note in `.harness/CHANGES.md` if you want it discoverable outside git log
+- A doc update in `README.md` if user-facing
+
+## Layer 3 — Dependency rationale
+
+When you add a dep to `pyproject.toml`, also add a one-line note explaining *why* — either as a `# comment` above the line or in `CHANGES.md`. Future agents will not re-justify a dep that's already there but they will remove ones they can't justify.
+
+## Forbidden
+
+- Don't write secrets, env values, or contents of `{{ profile.forbidden_paths | join(", ") }}` to logs or commits.
+- Don't persist user data the project doesn't already persist.

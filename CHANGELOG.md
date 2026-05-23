@@ -1,10 +1,215 @@
 # Changelog
 
-All notable changes to Aegis are documented here. Format follows
+All notable changes to Harness Kit (PyPI: `harness-kit`) and the legacy
+distribution (`self-harness`) are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.4] — 2026-05-23
+## [harness-kit 0.2.1] — 2026-05-23 — patch: 5 polish issues caught by the v0.2 re-eval
+
+A second real-build A/B (Claude Code rebuilding the same stock-agent
+against v0.2's `finance-agent` blueprint) confirmed the v0.2 thesis —
+three of the SKILL files prevented real bugs that v0.1 missed
+("Wilder smoothing", cross detection, 52w extremes). The same eval
+surfaced 5 polish-level gaps; v0.2.1 patches every one.
+
+### Fixed
+
+1. **`python` vs `python3` on macOS** — `_pick_test_command` now
+   probes PATH and embeds whichever binary actually exists. v0.2
+   hardcoded `python -m unittest discover`; on stock macOS (which
+   only ships `python3`) `harness verify --tests` failed on first run.
+2. **Memory schemas referenced but never written** — blueprint-bundled
+   `memory_schemas/*.json` are now copied into the user's
+   `.harness/memory_schemas/`. v0.2's `MEMORY.md` pointed at
+   `.harness/memory_schemas/positions.json` and `signals.json` but
+   never copied the files; the path references were dead.
+3. **Blueprint-level MCP pruning** — `_merge_and_prune_mcps` now
+   applies the same evidence rules to `blueprint.recommended_mcps`
+   that we apply to `profile.recommended_mcps`. `finance-agent`
+   declares `postgres`; v0.2 rendered it into AGENTS.md even for a
+   single-file portfolio CLI with no DB deps. Now pruned.
+4. **MCP dedup** — all 10 blueprint templates (5 × `AGENTS.md.j2`
+   + 5 × `TOOLS.md.j2`) now iterate `pruned_mcps` (a set-based
+   merge) instead of `profile.recommended_mcps + blueprint.recommended_mcps`.
+   v0.2 listed `filesystem` twice in finance-agent output.
+5. **Forbidden-commands pruning** — `_default_forbidden_commands` now
+   takes the `InspectionReport`: only includes `kubectl --context=prod*`
+   when `has_kubernetes`, `terraform apply` when `.tf` files present,
+   `DROP DATABASE`/`TRUNCATE` when DB deps detected. Universal
+   destructives (`rm -rf`, `git push --force`) always included.
+   v0.2 had all 4 stack-specific commands in every project regardless
+   of evidence; the eval flagged this as "template bloat that dilutes
+   the parts that matter".
+
+### Added
+
+- New `harness.blueprints.render_blueprint_memory_schemas(bp, root)`
+  function. Exported from `harness.blueprints`.
+- New `harness.profile._resolve_python_binary()` helper.
+- New `harness.blueprints.loader._merge_and_prune_mcps(profile, bp, report)`
+  helper exposed for testing.
+- Template variable `pruned_mcps` (list[str]) now available in every
+  blueprint template; legacy `mcps_list` (str) also updated to use
+  the pruned set.
+- 12 new regression tests in `tests/harness/unit/test_v021_patch.py`,
+  one per issue and one per evidence-driven inclusion rule.
+
+### Tests
+
+- **186 tests passing** (174 in v0.2 → +12 v0.2.1 regression tests).
+- All 7 golden-file snapshots updated for the new memory_schemas paths.
+
+## [harness-kit 0.2.0] — 2026-05-23 — closes every gap from the real-build eval
+
+A real-developer A/B build (Claude Code building a stock-analysis agent
+WITH harness vs. on a bare repo) surfaced 7 specific gaps in v0.1. v0.2
+closes every one.
+
+### Added
+
+- **`python-cli-app` blueprint** — the 80% case the v0.1 eval flagged.
+  For "build me a CLI / library / web API" tasks where the deliverable
+  is *code*, not an orchestration trace. Ships skills: `add-cli-command`,
+  `add-unit-test`, `manage-dependency`, `check-style`. Build-mode SOUL.
+- **`finance-agent` blueprint** — market data + portfolio analysis.
+  Read-only by default; placing orders requires an explicit per-action
+  human-approval gate enforced by the new `no_trades_without_gate`
+  validator. Ships skills: `fetch-market-data`, `compute-technicals`,
+  `screen-positions`, `flag-attention`. Memory schemas for `positions`
+  and `signals`.
+- **`harness skills add --domain <name> --description "..."`** —
+  scaffold a project-specific skill under `SKILLS/domain/<name>/`. The
+  blueprint catalog stays clean; project-specific procedures
+  (`fetch-prices`, `compute-pnl`, etc.) live in `domain/`.
+- **`harness verify --tests` and `harness verify --lint`** — shorthand
+  flags that route to the corresponding validators. Plus a clear error
+  message when a check name isn't defined for the chosen blueprint.
+- **New validators that run real project commands** — `check_tests` and
+  `check_lint` read `.harness/profile.yaml` and invoke the project's
+  declared `test_command` / `lint_command`. The "definition of done:
+  `harness verify` exits 0" promise is no longer a tautology.
+
+### Changed (surgical fixes from the eval)
+
+- **Test-runner smart default** (Fix 6) — `profile.test_command` is no
+  longer `null` for Python projects without an explicit runner. Defaults
+  to `python -m unittest discover` (stdlib, always works). Eliminates
+  the "guess pytest vs unittest" failure mode both agents in the A/B
+  eval ran into.
+- **MCP-list pruning** (Fix 3) — `_default_mcps_for` now requires
+  evidence: postgres only if `psycopg`/`sqlalchemy` deps detected;
+  `fetch` only if HTTP-client deps OR a web framework; `kubernetes`
+  only if `has_kubernetes`. A portfolio CLI no longer gets `postgres`
+  recommended, which the eval flagged as eroding agent trust.
+- **Forbidden-paths pruning** (Fix 3) — `migrations/`, `.aws/credentials`,
+  `.ssh/`, and `.next/`/`node_modules/` now only included when there's
+  evidence they apply (the directory exists, or the relevant framework
+  is present, or `aws`/`ssh` appears in the README). Universal sensitive
+  globs (`.env`, `*.pem`, `secrets/`) remain always-included.
+- **Approval-list pruning** (Fix 3) — `requires_human_approval` no
+  longer mentions `migrations/` when no `migrations/` dir exists; adds
+  `.env` rule only when `.env`/`.env.example` is present; adds k8s rule
+  only when `has_kubernetes`.
+- **Inspector dep-family detection** — `_detect_python` now tags 30+
+  more deps as `frameworks`/`notes` entries:
+  - **RAG**: langchain, llama-index, qdrant-client, chromadb, pinecone-client, weaviate-client, faiss-{cpu,gpu}
+  - **Finance**: yfinance, alpaca-py, ib_insync, polygon-api-client, ccxt, alpha_vantage, finnhub-python, pandas-ta
+  - **Workflow**: apache-airflow, prefect, dagster, celery, luigi
+  - **HTTP client**: httpx, requests, aiohttp
+  - **DB**: psycopg, psycopg2, sqlalchemy, asyncpg
+- **Recommender now routes 5 blueprints** (Fixes 1+2+5) — finance-agent
+  for stock/portfolio/yfinance/alpaca signals; rag-agent for
+  langchain/qdrant signals; support-agent for django+web-app+support
+  signals; workflow-agent for airflow/prefect/ETL signals;
+  python-cli-app as the new build-mode default for Python projects
+  (web-app/web-api/cli/library/other) without explicit orchestration
+  signals.
+- **`harness skills` recurses into `SKILLS/domain/`** so user-authored
+  domain skills surface alongside blueprint-shipped skills.
+
+### Tests
+
+- **174 tests** (up from 129 in v0.1), all passing.
+- New: `test_v02_smart_defaults.py` (16 tests covering each gap surgically).
+- New: `test_v02_domain_skills.py` (3 tests for the `SKILLS/domain/` convention).
+- Existing parametrized suites extended to all 5 blueprints.
+- Fixed: `test_validator_skipped_marker_not_counted_as_failure` now
+  uses `monkeypatch.setenv("RAG_OUT", …)` to isolate from stray
+  `/tmp/*-rag-output.json` files between test runs (caught during the
+  real-agent eval).
+
+### Internal
+
+- `harness.inspect_.report._detect_python` is now the single source of
+  truth for dep-family tagging — both the recommender and the MCP
+  pruner read from `report.frameworks` + `report.notes`.
+
+## [harness-kit 0.1.0] — 2026-05-23 — first public release
+
+**Project rename + new headline product.** What used to be `self-harness`
+(Aegis, the per-task synthesizing pipeline) is now `harness-kit` (the
+universal harness layer for AI coding agents). `aegis` remains importable
+as an internal module — the sandbox + provider abstraction + cache layer
+that `harness verify` uses.
+
+### Added
+
+- **`harness` CLI** — `init`, `sync`, `inspect`, `verify`, `doctor`, `mcp`,
+  `blueprint {list,show,apply}`, `skills {list,show,add}`, `version`.
+- **Provisioning orchestrator** (`harness.provision`) — atomic writes,
+  manifest-aware collision policy, dry-run support, adapter filtering.
+- **Five IDE adapters** rendered from a single `HarnessProfile`:
+  - `.claude/CLAUDE.md`
+  - `.cursor/rules`
+  - `AGENTS.md` (OpenAI Codex CLI convention)
+  - `.continue/config.json`
+  - `.windsurf/rules` (new — fixes the pre-existing broken import)
+- **Universal harness file set** rendered per blueprint:
+  - `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `MEMORY.md` — convergent file convention shared with Hermes, OpenClaw, OpenHarness
+  - `SKILLS/<name>/SKILL.md` — [`anthropics/skills`](https://github.com/anthropics/skills)-compatible
+- **Three production-grade blueprints**:
+  - `rag-agent` — citation-enforced Q&A with recall/precision eval
+  - `support-agent` — intent → KB → ticket → escalate with SLA lineage
+  - `workflow-agent` — Zapier-style orchestration with tool-log + idempotency validators
+- **Anthropic-skills I/O** (`harness.skills_io`) — parse, write, list, validate
+  `SKILL.md` files with YAML frontmatter.
+- **Curated MCP catalog** (`harness.catalog`) — 25 OSS servers across `rag`,
+  `support`, `workflow`, `infra`, `browser` agent types.
+- **Memory schemas** — `conversation`, `rag-chunks`, `ticket-history` as
+  JSON Schema.
+- **Validator runtime** (`harness.validators`) — loads blueprint-defined
+  Python modules through the aegis sandbox; returns stable JSON contract.
+- **Drift detection** (`harness.manifest`) — `harness sync --check` exits
+  non-zero in CI when generated files have been hand-edited.
+- **MCP server** (`harness mcp`) — five typed tools:
+  `harness_inspect`, `harness_blueprint_list`, `harness_skills_list`,
+  `harness_verify`, `harness_profile_read`.
+- **129 tests** across unit, golden-file, interop, and integration tiers.
+  **83% line coverage** on `src/harness/`.
+- **Three hero demos** under `examples/hero/`: FastAPI full-stack template
+  × `rag-agent`, Zulip × `support-agent`, Apache Airflow × `workflow-agent`.
+- **mkdocs-material docs site** at `docs/` covering concepts (incl. the
+  five harness layers + vs. Hermes/OpenClaw/OpenHarness), guides,
+  blueprint reference, cookbook, and CLI reference.
+
+### Changed
+
+- PyPI distribution renamed: `self-harness` → `harness-kit`.
+- Primary console script: `harness` (was `aegis`).
+- `aegis` console script kept for back-compat; marked legacy in `--help`.
+- Both `src/harness/` and `src/aegis/` ship in the same wheel.
+- README rewritten to reflect the new product identity, with a side-by-side
+  comparison vs. Hermes, OpenClaw, OpenHarness, Mastra, OpenAI Agents SDK.
+
+### Internal
+
+- `aegis.providers.auto_provider`, `aegis.synthesize.sandbox`, and
+  `aegis.core.result.*` are now the internal LLM I/O + sandbox + telemetry
+  layer that `harness verify` and `harness.profile_from_inspection_llm`
+  use under the hood.
+
+## [self-harness 0.5.4] — 2026-05-23
 
 Two real bugs caught by a fresh-venv end-to-end test of v0.5.3 from PyPI.
 Both led to silently-broken runs that returned `value: null` or `[mock] ...`
@@ -72,7 +277,7 @@ tests.
 
 CI cleanups + install-path cleanups. The package is now live on PyPI
 (`pip install self-harness`), so every doc that still pointed at the
-`git+https://github.com/jcaiagent7143-ui/aegis.git` install path has
+`git+https://github.com/jcaiagent7143-ui/harness-kit.git` install path has
 been updated. All MCP config examples now use `uvx --from "self-harness[mcp,openai]" aegis mcp`
 so non-Python users don't need to manage a venv at all.
 
@@ -341,7 +546,7 @@ If you installed via `pip install aegis-harness` against v0.4.0 docs:
     pip uninstall aegis-harness
     pip install self-harness          # or for everything: pip install 'self-harness[all]'
 
-GitHub repo URL is unchanged: <https://github.com/jcaiagent7143-ui/aegis>
+GitHub repo URL is unchanged: <https://github.com/jcaiagent7143-ui/harness-kit>
 
 ---
 

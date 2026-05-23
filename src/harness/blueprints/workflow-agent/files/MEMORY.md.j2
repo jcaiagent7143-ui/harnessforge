@@ -1,0 +1,43 @@
+# MEMORY.md — {{ profile.name }} workflow agent
+
+> _Two-layer memory: per-task tool log + skill-derived heuristics._
+
+## Layer 1 — Per-task tool log
+
+Every step's tool call + result. Recorded under
+`.harness/runs/<run_id>/tool_log.jsonl`. Append-only.
+
+Schema (one record per line):
+
+```jsonc
+{
+  "run_id": "...",
+  "step": 1,
+  "plan_node": "ingest-csv",
+  "tool": "shell",
+  "args": {"cmd": "head -n 1 input.csv"},
+  "ok": true,
+  "result_summary": "...",
+  "started_at": "...",
+  "duration_ms": 42
+}
+```
+
+## Layer 2 — Skill-derived heuristics
+
+Tunables the agent learns and persists across runs:
+
+- `tool_retry_thresholds.json` — per-tool retry counts that worked
+- `step_avg_duration.json` — running average duration; surfaces slowdowns
+
+Stored under `.harness/skill_memory/<skill-name>/`.
+
+## Retention
+
+- Tool log: kept per run; can be archived after 30 days.
+- Skill memory: kept across runs; archived on `harness sync --force`.
+
+## Forbidden
+
+- Don't write secrets, env values, or `{{ profile.forbidden_paths | join(", ") }}` to the tool log.
+- Don't log request bodies that contain PII without redaction.

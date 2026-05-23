@@ -1,0 +1,53 @@
+# TOOLS.md — {{ profile.name }} workflow agent
+
+## Recommended MCP servers
+
+{% for m in pruned_mcps %}
+- **{{ m }}** — {{ {
+    "filesystem": "Read/write project files. Honor forbidden_paths.",
+    "fetch": "HTTP requests. Always set a recognizable User-Agent.",
+    "shell": "Run shell commands. Refuse anything in forbidden_commands.",
+    "github": "PRs / Issues / Actions / file commits.",
+    "postgres": "Query the project DB read-only by default; ask before writes.",
+    "slack": "Notifications. Don't notify on every step — only milestones.",
+    "linear": "Issue tracking for ops tasks the workflow surfaces.",
+}.get(m, "See the MCP server's own docs.") }}
+{% endfor %}
+
+## Built-in skills
+
+{{ skills_list }}
+
+See `SKILLS/<name>/SKILL.md`.
+
+## Tool-call logging contract
+
+Every tool call you make MUST be appended to the session's `tool_log`:
+
+```jsonc
+{
+  "step": 3,
+  "tool": "shell",
+  "args": {"cmd": "pytest -x"},
+  "started_at": "...",
+  "duration_ms": 1234,
+  "ok": true,
+  "result_summary": "82 passed"
+}
+```
+
+`harness verify --check tool_log` enforces this. A failure means a tool
+was called without a log entry.
+
+## Project-local tools
+
+{% if profile.test_command -%}- `{{ profile.test_command }}` — tests
+{% endif -%}
+{% if profile.lint_command -%}- `{{ profile.lint_command }}` — lint
+{% endif -%}
+{% if profile.build_command -%}- `{{ profile.build_command }}` — build
+{% endif -%}
+{% if profile.dev_command -%}- `{{ profile.dev_command }}` — dev
+{% endif %}
+- `./scripts/test_task.sh "<task>"` — replay a task end-to-end
+- `harness verify --json` — full validator run

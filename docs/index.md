@@ -1,41 +1,43 @@
-# Aegis
+# Harness Kit
 
-**Dynamic, on-the-fly generated harnesses for AI agents.**
+> _The universal harness layer for AI coding agents._
+> _One command turns any repo into a project where Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness, and any other coding agent can work productively._
 
-The agent designs its own guardrails before executing the task.
-
-```python
-import asyncio
-from aegis import Aegis
-
-async def main():
-    aegis = Aegis()  # auto-detects provider from env
-    result = await aegis.run("Find 3 OSS agent frameworks and verify each URL")
-    print(result.value)              # the answer
-    print(result.harness_code)       # the Python Aegis generated
-    print(result.audit.risks)        # what could have gone wrong
-
-asyncio.run(main())
+```bash
+uvx harness-kit init
 ```
 
-## Why Aegis
+## What you get
 
-Every agent framework today makes you hand-write the harness: tool list, output schema, validators, retry policy, sandbox rules. That harness is static — it applies the same guardrails to "summarize this PDF" as to "execute trades on my brokerage account."
+After `harness init`, your repo has a complete harness:
 
-Aegis flips this. Give it a goal. It:
+| File / dir | Read by |
+|---|---|
+| `AGENTS.md` | every coding agent that follows the OpenAI Codex CLI convention |
+| `SOUL.md` | Hermes, OpenClaw, and any agent that wants personality grounding |
+| `TOOLS.md` | the universal tool/MCP catalog reference |
+| `MEMORY.md` | OpenHarness, and agents that follow that convention |
+| `SKILLS/` | every tool that reads the [`anthropics/skills`](https://github.com/anthropics/skills) format |
+| `.claude/CLAUDE.md` | Claude Code |
+| `.cursor/rules` | Cursor |
+| `.continue/config.json` | Continue |
+| `.windsurf/rules` | Windsurf |
+| `harness.config.json` | the binding to the blueprint (used by `harness sync` + `harness verify`) |
+| `.harness/profile.yaml` | the canonical machine-readable description |
+| `.harness/manifest.json` | hash of every file we wrote, for drift detection |
 
-1. **Analyzes** the goal and infers the expected output shape.
-2. **Assesses** failure modes against a catalog of ~30 known risks (citation hallucination, arithmetic drift, prompt injection from fetched content, …).
-3. **Synthesizes** real Python code — Pydantic schemas, tool guards, verifiers — as a custom runtime harness for *this* task.
-4. **Executes** the agent inside that harness, sandboxed and audited.
-5. **Verifies** the output via the synthesized verifier. If it fails, it repairs.
+## Why this exists
 
-The synthesized harness is inspectable Python that you can read, edit, or copy into your own code.
+→ [Why a harness layer](concepts/why-a-harness-layer.md)
 
-## Where to go next
+## The five layers we generate
 
-- [What is a dynamic harness?](concepts/what-is-a-dynamic-harness.md) — the core idea.
-- [The 5-stage pipeline](concepts/the-5-stage-pipeline.md) — how each stage works.
-- [Why this matters for AGI](concepts/why-this-matters-for-agi.md) — the bigger picture.
-- [Quickstart](guides/quickstart.md) — install and run in 30 seconds.
-- [GitHub repo](https://github.com/jcaiagent7143-ui/aegis) — fork, star, contribute.
+→ [The five harness layers](concepts/the-five-harness-layers.md)
+
+## How we fit alongside Hermes, OpenClaw, OpenHarness
+
+→ [vs. Hermes / OpenClaw / OpenHarness](concepts/vs-hermes-openclaw-openharness.md)
+
+## Get started
+
+→ [Quickstart](guides/quickstart.md)

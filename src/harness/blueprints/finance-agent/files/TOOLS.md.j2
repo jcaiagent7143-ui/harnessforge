@@ -1,0 +1,50 @@
+# TOOLS.md — {{ profile.name }}
+
+## Recommended Python packages
+
+| Package | Use | Notes |
+|---|---|---|
+| `yfinance` | Free Yahoo Finance prices/fundamentals | Scrapes; no auth; rate-limit gently |
+| `pandas` | OHLCV frames | Almost always already a transitive dep |
+| `numpy` | Vectorized math for indicators | Same |
+| `polygon-api-client` | Paid: stocks, options, forex, crypto | Needs `POLYGON_API_KEY` |
+| `alpaca-py` | Alpaca brokerage data + paper trading | Needs `ALPACA_KEY` / `ALPACA_SECRET` |
+| `ib_insync` | Interactive Brokers | Local TWS / IB Gateway required |
+| `ccxt` | Crypto exchanges (Binance/Coinbase/etc) | Needs per-exchange keys |
+| `alpha_vantage` | Free tier for daily/weekly | Free tier rate-limited |
+
+**Default for v0.1:** `yfinance` — no auth, free, sufficient for personal portfolio analysis.
+
+## Recommended MCP servers
+
+{% for m in pruned_mcps %}
+- **{{ m }}** — {{ {
+    "filesystem": "Read positions + write reports.",
+    "fetch": "REST market-data calls (when not using a Python SDK).",
+    "time": "Market-hours awareness (NYSE 9:30–16:00 ET, etc.); timezones.",
+    "postgres": "Persist historical fetches; compute multi-day signals.",
+}.get(m, "See the MCP server's own docs.") }}
+{% endfor %}
+
+## Project-local commands
+
+{% if profile.test_command -%}- `{{ profile.test_command }}` — tests
+{% endif -%}
+{% if profile.lint_command -%}- `{{ profile.lint_command }}` — lint
+{% endif -%}
+- `./scripts/test_task.sh` — sample analyst run
+- `harness verify --json` — full validator suite
+
+## The safety boundary
+
+The `no_trades_without_gate` validator enforces this rule at static-scan time:
+
+> Any call to `order(`, `buy(`, `sell(`, `place_order(`, `submit_order(`, `cancel_order(`, or `place_trade(` MUST be preceded (in the same function body) by an explicit per-action gate — e.g. `if approved_in_session and user_typed_yes:`.
+
+Generated code that puts a trade call behind only a config flag (no per-action user confirmation) **will fail validation**.
+
+## Built-in skills
+
+{{ skills_list }}
+
+See `SKILLS/<name>/SKILL.md` for each.

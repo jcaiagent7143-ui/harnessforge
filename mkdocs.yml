@@ -1,5 +1,5 @@
-site_name: Aegis
-site_description: Dynamic, on-the-fly generated harnesses for AI agents
+site_name: Harness Kit
+site_description: The universal harness layer for AI coding agents — one command sets up your repo for Claude Code / Cursor / Codex / Gemini CLI / Aider / OpenHarness.
 site_url: https://jcaiagent7143-ui.github.io/aegis
 repo_url: https://github.com/jcaiagent7143-ui/aegis
 repo_name: jcaiagent7143-ui/aegis
@@ -50,16 +50,38 @@ plugins:
 nav:
   - Home: index.md
   - Concepts:
-      - What is a dynamic harness?: concepts/what-is-a-dynamic-harness.md
-      - The 5-stage pipeline: concepts/the-5-stage-pipeline.md
-      - Why this matters for AGI: concepts/why-this-matters-for-agi.md
+      - Why a harness layer: concepts/why-a-harness-layer.md
+      - The five harness layers: concepts/the-five-harness-layers.md
+      - Profile vs. blueprint: concepts/profile-vs-blueprint.md
+      - The provisioning flow: concepts/the-provisioning-flow.md
+      - The validation contract: concepts/the-validation-contract.md
+      - Model-neutral by design: concepts/model-neutral-by-design.md
+      - vs. Hermes / OpenClaw / OpenHarness: concepts/vs-hermes-openclaw-openharness.md
+      - Trust model: concepts/trust-model.md
   - Guides:
       - Quickstart: guides/quickstart.md
-      - Use with your AI coding tool: guides/use-with-your-ai-coding-tool.md
-      - Production deployment: guides/production.md
-      - Custom validators: guides/custom-validators.md
-      - Self-hosting with Ollama: guides/self-hosting-with-ollama.md
-      - Adding tools: guides/adding-tools.md
+      - Bring your own coding agent: guides/bring-your-own-coding-agent.md
+      - Authoring a custom blueprint: guides/custom-blueprint.md
+      - Authoring a custom skill: guides/authoring-a-skill.md
+      - CI integration: guides/ci-integration.md
+      - MCP server: guides/mcp-server.md
+  - Blueprints:
+      - Overview: blueprints/index.md
+      - RAG agent: blueprints/rag-agent.md
+      - Support agent: blueprints/support-agent.md
+      - Workflow agent: blueprints/workflow-agent.md
   - Cookbook:
       - Overview: cookbook/index.md
-  - Reference: reference/index.md
+      - FastAPI + RAG demo: cookbook/fastapi-rag-demo.md
+      - Zulip + Support demo: cookbook/zulip-support-demo.md
+      - Airflow + Workflow demo: cookbook/airflow-workflow-demo.md
+  - Reference:
+      - Overview: reference/index.md
+      - CLI: reference/cli.md
+      - Blueprint schema: reference/blueprint-schema.md
+      - Config schema: reference/config-schema.md
+      - Verify protocol: reference/verify-protocol.md
+      - Skills format: reference/skills-format.md
+  - Internal (aegis):
+      - Aegis pipeline: internal/aegis/the-5-stage-pipeline.md
+      - Why this matters for AGI: internal/aegis/why-this-matters-for-agi.md

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness-kit/python-cli-app/conversation",
+  "title": "Python CLI app conversation memory",
+  "type": "object",
+  "required": ["messages"],
+  "properties": {
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "content", "ts"],
+        "properties": {
+          "role": {"enum": ["user", "assistant", "system"]},
+          "content": {"type": "string"},
+          "ts": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "files_changed_this_session": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

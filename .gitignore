@@ -55,3 +55,7 @@ site/
 .env
 .env.local
 *.pem
+
+# Coverage artifacts (including macOS-duplicate variants like ".coverage 2")
+.coverage*
+htmlcov/

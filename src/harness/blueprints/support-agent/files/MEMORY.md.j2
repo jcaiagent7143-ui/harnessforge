@@ -1,0 +1,57 @@
+# MEMORY.md — {{ profile.name }} support agent
+
+> _Three-layer memory: session, persistent (conversations + tickets), skill-derived._
+
+## Layer 1 — Session memory
+
+In-flight conversation. Schema: `.harness/memory_schemas/conversation.json`.
+
+```jsonc
+{
+  "conversation_id": "...",
+  "messages": [{"role": "user"|"assistant", "content": "...", "ts": "..."}],
+  "intent": "...",
+  "kb_chunks_consulted": ["chunk_id-1", ...]
+}
+```
+
+## Layer 2 — Persistent (tickets)
+
+Tickets are the durable artifacts. Schema: `.harness/memory_schemas/ticket_history.json`.
+
+```jsonc
+{
+  "ticket_id": "...",
+  "conversation_id": "...",   // back-pointer enforced by validator
+  "intent": "...",
+  "priority": "P0|P1|P2|P3",
+  "sla_due_at": "...",
+  "status": "open|escalated|resolved",
+  "lineage": [{"turn": 1, "message_id": "..."}]
+}
+```
+
+**Validator:** `check_ticket_lineage` confirms every ticket links to its
+originating conversation turn. Orphan tickets fail.
+
+## Layer 3 — Skill-derived
+
+Skills can record:
+
+- `intent_classifier.metrics.json` — running accuracy of `classify-intent`
+- `kb_retrieval.cold_topics.json` — topics with low retrieval confidence (signal to add KB content)
+
+Written under `.harness/skill_memory/<skill-name>/`.
+
+## Retention
+
+- Session: discarded on conversation close.
+- Tickets: kept indefinitely; archived after 1 year.
+- KB chunks consulted: kept on the ticket for audit.
+- **PII**: redact email/phone/ID numbers before persisting; store the redaction map separately under access-controlled storage (not in this repo).
+
+## Forbidden
+
+- Don't persist secrets, env values, or `{{ profile.forbidden_paths | join(", ") }}`.
+- Don't write to `.harness/memory_schemas/`.
+- Don't close tickets without populating `resolved_summary` and `resolution_action`.

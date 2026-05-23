@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness-kit/workflow-agent/conversation",
+  "title": "Workflow conversation memory",
+  "type": "object",
+  "required": ["run_id", "task", "plan", "tool_log"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "task": {"type": "string"},
+    "plan": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "name", "tool", "expected_effect"],
+        "properties": {
+          "step": {"type": "integer", "minimum": 1},
+          "name": {"type": "string"},
+          "tool": {"type": "string"},
+          "args_template": {"type": "object"},
+          "expected_effect": {"type": "string"},
+          "idempotent": {"type": "boolean"}
+        }
+      }
+    },
+    "tool_log": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step", "tool", "args", "started_at", "ok"],
+        "properties": {
+          "step": {"type": "integer"},
+          "tool": {"type": "string"},
+          "args": {"type": "object"},
+          "started_at": {"type": "string", "format": "date-time"},
+          "duration_ms": {"type": "integer", "minimum": 0},
+          "ok": {"type": "boolean"},
+          "result_summary": {"type": "string"},
+          "error": {"type": "string"}
+        }
+      }
+    },
+    "final_status": {"enum": ["ok", "failed", "partial"]},
+    "idempotent_marker": {"type": "string"}
+  }
+}

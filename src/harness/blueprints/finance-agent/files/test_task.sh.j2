@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# test_task.sh — run the finance-agent's structure + safety checks.
+set -euo pipefail
+
+echo "[finance-agent] structure check"
+harness verify --check structure --json
+
+echo ""
+echo "[finance-agent] no-trades-without-gate check"
+harness verify --check no_trades_without_gate --json
+
+{% if profile.test_command -%}
+echo ""
+echo "[finance-agent] project tests: {{ profile.test_command }}"
+{{ profile.test_command }}
+{% endif %}
+
+echo ""
+echo "[finance-agent] ✓ done"

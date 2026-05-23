@@ -1,439 +1,289 @@
 <div align="center">
 
-# Aegis
+# Harness Kit
 
-# In 2027, developers will stop setting up agent harnesses.<br/>The LLM will design its own harness for each unique task.
+### One command turns any repo into a project where Claude Code, Cursor, Codex, Gemini CLI, Aider, and any other coding agent show up already knowing the codebase.
 
-### Aegis is the open-source implementation of that future. Shipping in 2026.
+```bash
+uvx harness-kit init
+```
 
-<img src="docs/assets/aegis-hero.svg" alt="Aegis pipeline diagram" width="100%"/>
-
-[![PyPI](https://img.shields.io/badge/pypi-self--harness%200.5.4-blue)](https://pypi.org/project/self-harness/)
+[![PyPI](https://img.shields.io/pypi/v/harness-kit?label=pypi)](https://pypi.org/project/harness-kit/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Tests](https://img.shields.io/badge/tests-75%20passing-brightgreen)](.github/workflows/test.yml)
-[![Works with](https://img.shields.io/badge/works%20with-Claude%20Code%20·%20Cursor%20·%20Codex%20·%20Cline%20·%20any%20OpenAI%20client-orange)](docs/guides/use-with-your-ai-coding-tool.md)
-
-[**The thesis**](#the-thesis) ·
-[**30-second install**](#use-with-your-ai-coding-tool--30-seconds-no-code) ·
-[**What the LLM writes**](#what-the-llm-actually-writes) ·
-[**Docs**](docs/index.md)
+[![CI](https://github.com/jcaiagent7143-ui/harness-kit/actions/workflows/test.yml/badge.svg)](https://github.com/jcaiagent7143-ui/harness-kit/actions/workflows/test.yml)
+[![Tests](https://img.shields.io/badge/tests-186%20passing-brightgreen)](https://github.com/jcaiagent7143-ui/harness-kit/actions/workflows/test.yml)
 
 </div>
 
-> ### ⚠️ Not to be confused with `aegis-harness` on PyPI
->
-> The PyPI name `aegis-harness` was already owned by an unrelated project — **`apiad/aegis`**, a multi-agent TUI orchestrator. If you ran `pip install aegis-harness` against our v0.4.0 docs, you got *their* package, not ours, and **none of the API documented here will exist** (no `Aegis` class, no `.run()`, no 5-stage pipeline — that's their `WorkflowEngine` instead).
->
-> **This project ships as `self-harness` on PyPI.** Install it the normal way:
->
-> ```bash
-> pip install self-harness            # core
-> pip install "self-harness[all]"     # everything (providers, proxy, mcp, web, embeddings)
-> ```
->
-> No relation to `apiad/aegis`. Different code, different goals, different author.
-
 ---
 
-## Which form do I use?
+## What you get
 
-| You are using… | Use this form | Second LLM spun up? | API key needed for Aegis itself? |
-|---|---|---|---|
-| Claude Code | **Skill** (import the GitHub repo as a skill) | No | No — uses your Claude session |
-| Claude Chat / Cowork | **Skill** (paste SKILL.md as a skill) | No | No |
-| Cursor with skill loading | **Skill** | No | No |
-| Cursor without skills | MCP server *or* OpenAI proxy | Yes | Yes |
-| OpenAI Codex CLI | **OpenAI proxy** (`aegis proxy`) | Yes | Yes (OPENAI_API_KEY) |
-| Gemini CLI | **OpenAI proxy** *or* MCP if your build supports it | Yes | Yes |
-| Cline / Continue.dev / Windsurf | MCP server | Yes | Yes |
-| Aider / Open WebUI / generic OpenAI clients | OpenAI proxy | Yes | Yes |
-| Your own Python service | `pip install self-harness` and import `Aegis` | Yes | Yes |
+Run `harness init` in your repo. ~3 seconds later, you have:
 
-**Recommended path for any Claude user is the Skill form** — same model, same bill, no subprocess, audit trail visible to you inline. The runtime exists for tools that can't load skills.
-
----
-
-## The thesis
-
-Today, every agent framework — **OpenClaw, Hermes**, LangChain, CrewAI, AutoGen, the OpenAI Assistants API — makes the developer hand-author the harness. You write the system prompt. You write the tool allowlist. You write the output schema. You write the validators. You write the retry policy. You write the sandbox rules. You write it once, and it applies to every task forever after.
-
-That model is about to end.
-
-The next stepping stone toward AGI is agents that:
-
-1. **assess their own task** — what is being asked, where could it go wrong;
-2. **predict their own failure modes** — citation hallucination, arithmetic drift, fabricated entities;
-3. **write their own runtime harness in real Python** — system prompt, tool allowlist, output schema, post-hoc verifier, retry policy;
-4. **execute inside that harness** — sandboxed, audited, verifiable;
-5. **return verified results** — or refuse, with a reason.
-
-The developer authors *nothing per-task*. They just state the goal. The LLM designs the harness.
-
-That's Aegis. It ships in two forms:
-
-1. **A skill your LLM applies itself** — the primary form. A single markdown file ([SKILL.md](SKILL.md)) that teaches your AI assistant (Claude Code / Chat / Cowork, Cursor, anyone with skill-loading) the 5-stage methodology. The LLM does all 5 stages itself in the same conversation, using its own model and its own tools. **No subprocess. No second LLM. No API key.** One model, one bill, one audit trail visible inline to the user.
-2. **A Python runtime + MCP server + OpenAI proxy** — the secondary form. For non-skill-aware tools (Codex CLI, Aider, Open WebUI, generic OpenAI clients) that can't read a skill, the runtime brings its own LLM and delegates. Same methodology, different mechanism.
-
-The same goal produces a *different harness* on every run, because the LLM is doing the design work — not a developer staring at a config file.
-
----
-
-## Primary form — your LLM applies it itself (no second LLM, no API key)
-
-This is the right path if you use Claude Code, Claude Chat, Claude Cowork, or any tool that supports loading Anthropic-style Skills. The skill is just a markdown file Claude reads and applies.
-
-**Install as a skill into Claude Code:**
-
-In Claude Code's Skills panel → **Import from GitHub** → paste:
 ```
-https://github.com/jcaiagent7143-ui/aegis
+your-repo/
+├── AGENTS.md           ← every coding agent reads this (OpenAI Codex CLI convention)
+├── SOUL.md             ← personality / tone for this project
+├── TOOLS.md            ← which tools / MCPs to use
+├── MEMORY.md           ← memory schemas
+├── SKILLS/             ← anthropics/skills-compatible procedures
+│   ├── chunk-and-embed/SKILL.md
+│   ├── retrieve-and-rerank/SKILL.md
+│   └── …
+├── .claude/CLAUDE.md       ← Claude Code reads this automatically
+├── .cursor/rules           ← Cursor reads this automatically
+├── .continue/config.json   ← Continue reads this automatically
+├── .windsurf/rules         ← Windsurf reads this automatically
+├── harness.config.json     ← what blueprint this repo is bound to
+└── .harness/
+    ├── profile.yaml        ← the canonical machine-readable description
+    ├── manifest.json       ← sha256 of every file for safe re-runs
+    └── memory_schemas/     ← JSON Schemas the blueprint expects
 ```
 
-Now ask Claude *"Apply the aegis skill to verify: should I refactor src/auth.py to async?"* — Claude reads the skill, runs all 5 stages itself in the same conversation (analyzes the goal, picks risks from the catalog inline in the skill, writes the Pydantic verifier as a code block, executes using its own Bash/Edit/Read tools, runs the verifier with real tool calls, reports pass or refuses).
+These aren't placeholder stubs. Here's the first 25 lines of an `AGENTS.md` `harness init --no-llm` produced for a tiny stock-analysis repo:
 
-**There is no `aegis_run` tool call to a subprocess. There is no second LLM call. Claude does it all itself using your one model and your one API key.** What you pay for is Claude reasoning longer (~3-5× more tokens per task) — that's the trade for the audit trail and refusal.
+```markdown
+# AGENTS.md
 
-Full skill: [SKILL.md](SKILL.md). Read it once to see exactly what Claude follows.
+> _Generated by harness-kit v0.2.1 · blueprint `finance-agent` v1.0.0._
+
+You are a **finance / market-data analyst agent** working in **portfoliowatch**.
+
+This project is **read-only by default.** You fetch market data, compute
+signals, surface insights. You **never** place orders, move money, or
+modify positions without an **explicit per-action human-approval gate**
+that the user typed "yes" through in this session.
 
 ---
 
-## Secondary form — for non-skill-aware tools (delegation path)
+## The analyst loop
 
-If you're using **OpenAI Codex CLI**, **Cursor without skills**, **Aider**, **Open WebUI**, or anything that doesn't natively load skills, the Python runtime does the 5 stages for them. This path *does* spin up a second LLM (because the outer tool can't follow the methodology on its own).
+```
+fetch → compute → screen → flag
+```
 
-### Option A — MCP server (Cursor, Cline, Continue.dev, Windsurf, Claude Code if you prefer delegation)
+- `SKILLS/fetch-market-data` — get prices/quotes/fundamentals; respect rate limits.
+- `SKILLS/compute-technicals` — RSI, SMA, MACD, etc. Vectorized; tested against canonical references.
+- `SKILLS/screen-positions` — filter the universe by your declared criteria.
+- `SKILLS/flag-attention` — surface what changed and why — calibrated, not alarmist.
+```
+
+A Claude Code session opened in that repo reads it and knows the loop, the
+safety contract, and which skills to invoke — without you typing any of it
+into the chat.
+
+---
+
+## Install
+
+```bash
+# No install, run once:
+uvx harness-kit init
+
+# Or install globally:
+pipx install harness-kit
+harness init
+
+# Or pip into a venv:
+pip install harness-kit
+```
+
+`--no-llm` makes init fully deterministic — no API key, ~2 seconds:
+
+```bash
+uvx harness-kit init --no-llm
+```
+
+Optional extras add an LLM-based refinement step (pulls dependency only if
+you want it):
+
+```bash
+pip install "harness-kit[anthropic]"   # use Claude to refine the profile
+pip install "harness-kit[openai]"      # use GPT
+pip install "harness-kit[mcp]"         # expose harness itself as an MCP server
+```
+
+---
+
+## Why this exists
+
+Every time a developer opens a new repo in Claude Code (or Cursor, Codex,
+Gemini CLI, Aider), they re-explain the project: what kind of code is
+this, what conventions, what's forbidden, what does done look like.
+Different IDE, same boilerplate. And every file is project-specific —
+you can't just copy yesterday's `CLAUDE.md`.
+
+The fix is small: a deterministic walker that inspects the repo, picks a
+sensible **agent blueprint** based on the deps + structure, and emits the
+ground-truth files every major coding agent reads on startup. Run it once
+per repo, commit the output, every agent you use shows up smarter.
+
+That's what `harness init` is. The thing it generates is the harness; the
+CLI is a 60-second way to author one.
+
+---
+
+## Five blueprints in 0.2.x
+
+Pick with `--blueprint`, or let the recommender choose based on inspection
+(yfinance deps → `finance-agent`; langchain/qdrant → `rag-agent`; airflow
+→ `workflow-agent`; generic Python → `python-cli-app`).
+
+| Blueprint | For | Skills it ships |
+|---|---|---|
+| **`python-cli-app`** | Build a Python CLI / library / web API — the default for greenfield Python work | `add-cli-command`, `add-unit-test`, `manage-dependency`, `check-style` |
+| **`finance-agent`** | Market data + portfolio analysis | `fetch-market-data`, `compute-technicals`, `screen-positions`, `flag-attention` + `no_trades_without_gate` validator that fails if generated code calls a broker function without an approval check |
+| **`rag-agent`** | Retrieval-augmented Q&A with citation enforcement | `chunk-and-embed`, `retrieve-and-rerank`, `answer-with-citations`, `eval-recall-precision` + citation cross-checker |
+| **`support-agent`** | Customer support: intent → KB → ticket → escalate | `classify-intent`, `retrieve-kb-answer`, `file-ticket`, `escalate-if-unresolved` + ticket-lineage validator |
+| **`workflow-agent`** | Multi-step orchestration (Zapier/n8n-style) | `decompose-task`, `call-tool-with-retry`, `check-result` + tool-log + idempotency validators |
+
+Beyond the catalog you can author project-specific skills:
+
+```bash
+harness skills add fetch-portfolio-prices \
+  --domain --description "Fetch live prices for tickers in positions.json from Polygon."
+```
+
+Domain skills land under `SKILLS/domain/<name>/SKILL.md` and surface in
+`harness skills list` alongside blueprint-shipped skills.
+
+---
+
+## Validation that's actually a contract, not a vibe
+
+`harness verify` runs blueprint-defined checks and emits a stable JSON
+contract — the same contract whether you call the CLI or the MCP tool. Your
+coding agent reads the JSON and self-corrects:
+
+```bash
+$ harness verify --json
+{
+  "schema_version": 1,
+  "blueprint": "finance-agent",
+  "checks": [
+    {"name": "structure", "status": "pass", "duration_ms": 1, "messages": []},
+    {"name": "tests",     "status": "pass", "duration_ms": 42, "messages": []},
+    {"name": "no_trades_without_gate", "status": "pass", "duration_ms": 8, "messages": []}
+  ],
+  "summary": {"total": 3, "passed": 3, "failed": 0}
+}
+```
+
+Exit codes: `0` all pass · `1` failures · `2` config error · `3` not a harness-bootstrapped repo. Drop in CI:
+
+```yaml
+- run: pip install harness-kit
+- run: harness sync --check    # fail if generated files drifted from manifest
+- run: harness verify --json   # fail if blueprint contract broken
+```
+
+The `no_trades_without_gate` validator on `finance-agent` is the spicy one:
+it static-scans the repo for `place_order(`, `buy(`, `sell(`, etc., and
+fails the build if any of them sit behind only a config flag instead of a
+runtime user-approval gate. See `docs/concepts/trust-model.md` for the full
+trust boundary (`profile.test_command` and `lint_command` are executed as
+shell — same model as `make test` / `npm test`).
+
+---
+
+## Commands
+
+```
+harness init [PATH]                       # inspect → profile → blueprint → render
+harness sync [PATH] [--check]             # re-render adapters; --check = drift detect for CI
+harness inspect [PATH] [--json|yaml]      # deterministic InspectionReport
+harness verify [TARGET] [--json] [--tests|--lint]
+harness blueprint {list, show, apply}
+harness skills {list, show, add [--domain]}
+harness doctor                            # diagnose env: provider keys, extras, repo health
+harness mcp                               # run stdio MCP server (5 typed tools)
+harness version
+```
+
+---
+
+## Use with your existing coding agent
+
+| Agent | What it reads | Setup |
+|---|---|---|
+| Claude Code | `.claude/CLAUDE.md` | nothing — automatic |
+| Cursor | `.cursor/rules` | nothing |
+| Codex CLI | `AGENTS.md` | nothing |
+| Continue | `.continue/config.json` | nothing |
+| Windsurf | `.windsurf/rules` | nothing |
+| Gemini CLI / Aider | `AGENTS.md` | nothing |
+| Anything that speaks MCP | `harness mcp` exposes 5 typed tools | add to client config |
+
+For the MCP path:
 
 ```json
 {
   "mcpServers": {
-    "aegis": {
+    "harness": {
       "command": "uvx",
-      "args": ["--from", "self-harness[mcp,openai]", "aegis", "mcp"],
-      "env": {
-        "OPENAI_API_KEY": "sk-...",
-        "AEGIS_MODEL": "gpt-5.4-nano-2026-03-17"
-      }
+      "args": ["--from", "harness-kit[mcp]", "harness", "mcp"]
     }
   }
 }
 ```
 
-> 🚨 **The `env` block is REQUIRED.** MCP subprocesses do NOT inherit your
-> shell's environment variables. If you put your API key in `~/.zshrc` or
-> `~/.bashrc` and leave `env` empty, Aegis will silently fall back to the
-> Mock provider and return placeholder text — exactly the bug we found in
-> external testing. **Always set provider keys inside the `env` block.**
-
-Tools exposed: `aegis_run`, `aegis_assess`, `aegis_inspect`, `aegis_list_risks`.
-
-### Option B — OpenAI-compatible HTTP proxy (Codex CLI, Aider, Open WebUI, generic /v1 clients)
-
-```bash
-pip install "self-harness[proxy,openai]"
-export OPENAI_API_KEY=sk-...
-aegis proxy --port 8000
-# then in your tool: set base URL to http://localhost:8000/v1
-```
-
-Copy-paste configs for every tool: [docs/guides/use-with-your-ai-coding-tool.md](docs/guides/use-with-your-ai-coding-tool.md).
+Exposes `harness_inspect`, `harness_blueprint_list`, `harness_skills_list`,
+`harness_verify`, `harness_profile_read` as typed tools your agent can call.
 
 ---
 
-## Quickstart (Python / CLI)
+## Hero demos (reproducible from this repo)
 
-```bash
-pip install "self-harness[all]"
+Three end-to-end demos against real public repos, pinned to specific SHAs:
 
-export ANTHROPIC_API_KEY=sk-ant-...
+| Demo | Repo | Blueprint | Run |
+|---|---|---|---|
+| FastAPI + RAG | [fastapi/full-stack-fastapi-template](https://github.com/fastapi/full-stack-fastapi-template) | `rag-agent` | [`examples/hero/fastapi_rag/run.sh`](examples/hero/fastapi_rag/run.sh) |
+| Zulip + Support | [zulip/zulip](https://github.com/zulip/zulip) | `support-agent` | [`examples/hero/zulip_support/run.sh`](examples/hero/zulip_support/run.sh) |
+| Airflow + Workflow | [apache/airflow](https://github.com/apache/airflow) | `workflow-agent` | [`examples/hero/airflow_workflow/run.sh`](examples/hero/airflow_workflow/run.sh) |
 
-aegis run "Find the top 5 startups in YC's W26 batch and verify each URL"
-```
-
-```python
-import asyncio
-from aegis import Aegis
-
-async def main():
-    aegis = Aegis()  # auto-detects provider from env
-    result = await aegis.run("Find the top 5 startups in YC's W26 batch")
-    print(result.value)              # the answer
-    print(result.harness_code)       # the Python code Aegis generated
-    print(result.audit.risks)        # what could have gone wrong
-
-asyncio.run(main())
-```
+Each `run.sh` shallow-clones the upstream repo at the pinned SHA, runs
+`harness init --no-llm`, and runs `harness verify` to confirm everything passes. CI runs all three on every push.
 
 ---
 
-## What the LLM actually writes
+## How this compares to alternatives
 
-Three goals through the same Aegis call. Three structurally different harnesses, all authored by the LLM at the moment the goal arrives:
+The "agent infrastructure" space has runtimes (Hermes, OpenClaw,
+OpenHarness), SDKs (OpenAI Agents SDK, Mastra), and now provisioners
+(harness-kit). The honest version of the comparison — including when
+*not* to use harness-kit — lives in [`docs/concepts/vs-hermes-openclaw-openharness.md`](docs/concepts/vs-hermes-openclaw-openharness.md).
 
-| Goal | Harness the LLM generates (per-task, automatic) |
-|---|---|
-| *"Find the top 5 startups in YC's W26 batch"* | Pydantic schema with regex-validated YC URLs + verifier that re-fetches each URL to confirm the startup exists |
-| *"Refactor `src/auth.py` to async"* | AST-diff validator + write-allowlist sandbox + test-runner verifier that runs the existing test suite |
-| *"Compute MSFT P/E from price and EPS"* | Numeric-bounds schema + arithmetic re-checker that recomputes the answer from `get_quote` data |
-
-A static harness can't do this — its defenses are wrong for at least two of these tasks. Aegis's defenses are different on every run because **the LLM reasoned about what could go wrong for *that specific goal* before executing.**
-
-The 2027 prediction: agents do this for every task, no developer in the loop. Aegis is the working 2026 implementation.
+The shortest version: **if you write your own `CLAUDE.md` for every repo
+you start, harness-kit replaces that file with one that's actually
+project-specific, plus everything the other coding agents you use need
+to read.** That's the comparison most readers are actually making.
 
 ---
 
-## How it works
+## Quality bar
 
-```
-                ┌──────────────────┐
-   Your goal ──▶│ 1. ANALYZE       │  Decompose. Infer output shape.
-                └────────┬─────────┘
-                         ▼
-                ┌──────────────────┐
-                │ 2. ASSESS (FMEA) │  Where could this hallucinate?
-                └────────┬─────────┘  → Risk profile (citation, arithmetic,
-                         ▼              prompt-injection, schema drift, …)
-                ┌──────────────────┐
-                │ 3. SYNTHESIZE    │  Generate REAL Python:
-                └────────┬─────────┘  Pydantic schemas, tool guards, verifiers
-                         ▼
-                ┌──────────────────┐
-                │ 4. EXECUTE       │  Run agent inside generated harness.
-                └────────┬─────────┘  Sandboxed. Audited.
-                         ▼
-                ┌──────────────────┐
-                │ 5. VERIFY        │  Run synthesized verifiers.
-                └────────┬─────────┘  On fail → repair loop.
-                         ▼
-                Safe result + audit trail + generated harness code
-```
-
-### The killer feature: the *entire* runtime is real Python, written by the LLM
-
-A typical Aegis-generated harness for a financial task. Every line below — including the system prompt, the step budget, the tool descriptions — was written by the LLM in response to the goal:
-
-```python
-# AUTO-GENERATED HARNESS for: "Should I buy NVDA right now?"
-# Defenses:
-#   stale-knowledge        -> require live get_quote before any price reasoning
-#   citation-hallucination -> regex on filing URLs + post-hoc fetch_url verifier
-#   arithmetic-drift       -> recompute price_vs_200dma from raw quote
-#   overconfident-uncertainty -> required confidence + caveats fields
-
-from typing import Literal
-from pydantic import BaseModel, Field
-
-SYSTEM_PROMPT = (
-    "You are a precision-obsessed equity analyst. NEVER cite a number you did "
-    "not get from a tool call in this run. NEVER recommend BUY on a stock "
-    "without a live quote no older than 1 hour. Show your arithmetic. Refuse "
-    "to recommend on incomplete data — say so in caveats."
-)
-MAX_STEPS = 10
-MAX_REPAIRS = 2
-TEMPERATURE = 0.0
-
-TOOL_OVERRIDES = {
-    "get_quote": "Call FIRST for any price question. Stale price = wrong answer.",
-    "validate_ticker": "Call this for ANY ticker the user mentions. If it raises, refuse.",
-}
-
-class Output(BaseModel):
-    decision: Literal["BUY", "HOLD", "SELL"]
-    confidence: Literal["low", "medium", "high"]
-    price_used: float = Field(ge=0)
-    decision_basis: str = Field(min_length=50)
-    caveats: list[str] = Field(min_length=1)
-
-ALLOWED_TOOLS = ["validate_ticker", "get_quote", "get_news"]   # no shell, no write
-
-def verify(output: Output) -> list[str]:
-    failures = []
-    quote = tool("get_quote", ticker="NVDA")
-    if abs(output.price_used - quote["price"]) / quote["price"] > 0.02:
-        failures.append(f"price_used {output.price_used} > 2% off live {quote['price']}")
-    return failures
-
-def repair_feedback(failures, output):
-    return f"Re-fetch the quote and re-derive the decision. Failures: {failures}"
-```
-
-That whole module — system prompt to verifier — is what the LLM emitted, validated by the sandbox, and run by a thin interpreter. You can read it, edit it, copy it, save it for next time. **That's what "developer doesn't set up the harness" actually looks like.**
+- **186 tests** across unit / golden-file / interop / integration tiers, all green on Python 3.11 / 3.12 / 3.13
+- **83% line coverage** on `src/harness/`
+- **mypy strict** + **ruff** clean
+- **mkdocs --strict** builds clean
+- **Fresh-venv install verified** — `pip install harness-kit && harness version` works on a clean machine (the v0.2.1 release was held until this passed)
+- **Two rounds of real-agent A/B evaluation** — Claude Code building the same stock-analysis agent WITH vs. WITHOUT the harness; the diff drove the v0.2 + v0.2.1 designs. See [`CHANGELOG.md`](CHANGELOG.md) for the per-fix-per-eval breakdown.
 
 ---
-
-## Why this matters
-
-Every conversation about "agent harnesses" today — OpenClaw, Hermes, the dozens of frameworks shipping every month — is about helping developers *write better static harnesses faster*. That's the wrong direction.
-
-The actual frontier is: **agents that don't need a developer-authored harness at all.** They assess the task, anticipate where they'd hallucinate, write the protective scaffold themselves, then execute inside it. The developer just states the goal.
-
-That's the 2027 prediction. Aegis is the working 2026 implementation:
-
-| | Static-harness frameworks (today) | Aegis (this repo) |
-|---|---|---|
-| Who writes the system prompt? | Developer, once | LLM, per task |
-| Who writes the tool allowlist? | Developer, once | LLM, per task |
-| Who writes the output schema? | Developer, once | LLM, per task |
-| Who writes the verifier? | Developer, once | LLM, per task |
-| Who picks the retry policy? | Developer, once | LLM, per task |
-| Adapts when the task changes? | No — same harness everywhere | Yes — different harness per task |
-| Catches task-specific failure modes? | Only ones you predicted | Whatever the LLM identifies as risky |
-
-A general intelligence can't rely on humans to hand-author defenses for every task. It needs to assess its own competence, anticipate its own failure modes, and engineer the protective scaffold *before* acting — exactly how a careful engineer runs a pre-mortem before shipping code. Aegis is a minimal working prototype of that loop.
-
-Read more: [docs/concepts/why-this-matters-for-agi.md](docs/concepts/why-this-matters-for-agi.md).
-
----
-
-## What's inside (and why it stays small)
-
-Aegis is intentionally a thin scaffold around the LLM that lets *it* do the design work. Everything per-task is the model's job; everything else is plumbing.
-
-- **5-stage pipeline** — analyze → assess → synthesize → execute → verify (+ repair loop). The pipeline never picks defenses — the LLM does, in stage 3.
-- **30-entry risk catalog** — a vocabulary the LLM uses to name failure modes (citation hallucination, arithmetic drift, prompt injection from fetched content, …). Not defenses — *names*. The LLM still writes the defenses.
-- **Sandbox for the LLM's generated code** — AST-validated, restricted `__builtins__`, wall-clock + memory limits on `verify()`. No `os`/`subprocess`/network unless the harness explicitly allows it.
-- **Multi-provider** — Anthropic / OpenAI / Gemini / Ollama / LiteLLM. The LLM doing the harness design can be Claude on one task, GPT on another, your local Llama on a third.
-- **Harness cache** — embedding-indexed memory of past harnesses. Similar goals adapt past defenses. Faster over time.
-- **Audit trail per run** — JSON blob of every stage, tool call, repair. `aegis inspect` / `aegis replay`. For compliance + debugging.
-- **Two distribution surfaces** — `aegis mcp` (Model Context Protocol server) and `aegis proxy` (OpenAI-compatible HTTP proxy). Any AI coding tool plugs in with zero Python code.
-- **Tiny core** — ~3.5k LOC. Read it in an afternoon. Fork it in a weekend.
-
----
-
-## CLI
-
-```bash
-aegis run "your goal here"           # synthesize harness + execute
-aegis run --interactive               # REPL mode with live trace
-aegis inspect <run-id>                # pretty-print the audit trail
-aegis replay <run-id>                 # re-execute against saved harness
-aegis cache list                      # list learned harnesses
-aegis cache show <hash>               # view a cached harness
-aegis serve                           # start the web demo on :8000
-aegis bench --quick                   # run 5-task smoke benchmark
-aegis bench                           # full 30-task benchmark
-
-# Integration entrypoints (the killer features for AI-tool users):
-aegis mcp                             # MCP stdio server (for Claude Code, Cursor, Cline, …)
-aegis proxy --port 8000               # OpenAI-compatible HTTP proxy (for any /v1/chat/completions client)
-```
-
----
-
-## Provider matrix
-
-```python
-from aegis import Aegis
-from aegis.providers import Anthropic, OpenAI, Gemini, Ollama, LiteLLM
-
-Aegis(provider=Anthropic())                          # Claude
-Aegis(provider=OpenAI(model="gpt-5.4-nano-2026-03-17"))   # GPT-5.x
-Aegis(provider=Gemini(model="gemini-2.5-pro"))       # Google Gemini
-Aegis(provider=Ollama(model="llama3.1:70b"))         # local, free
-Aegis(provider=LiteLLM(model="bedrock/claude-3"))    # 100+ providers
-```
-
-`Aegis()` with no args auto-detects from env in this order: `ANTHROPIC_API_KEY` → `OPENAI_API_KEY` → `GOOGLE_API_KEY` / `GEMINI_API_KEY` → local Ollama → Mock (always works).
-
----
-
-## Cookbook
-
-| Example | What it shows |
-|---|---|
-| [01_web_research.py](examples/01_web_research.py) | Citation verifier generated for an open-ended research goal |
-| [02_code_refactor.py](examples/02_code_refactor.py) | AST-diff + test-runner harness for a code task |
-| [03_data_analysis.py](examples/03_data_analysis.py) | Arithmetic re-checker for a CSV question |
-| [04_citation_verifier.py](examples/04_citation_verifier.py) | Deep dive on the citation-hallucination defense |
-| [05_custom_provider.py](examples/05_custom_provider.py) | Plug in your own LLM endpoint |
-| [06_with_langchain_tools.py](examples/06_with_langchain_tools.py) | Use existing LangChain tools as Aegis tools |
-| [07_local_only_with_ollama.py](examples/07_local_only_with_ollama.py) | Fully offline, no API keys |
-
----
-
-## Benchmarks
-
-30 tasks across web research, code, data analysis, and multi-step planning. Each task is run under three conditions:
-
-1. **Raw LLM** — direct prompt, no guardrails
-2. **Fixed harness** — hand-authored guardrails (typical agent framework approach)
-3. **Aegis dynamic** — guardrails synthesized per-task
-
-We measure task success, hallucination rate, tokens used, latency, and retry count. See [benchmarks/README.md](benchmarks/README.md) for methodology and current results.
-
----
-
-## Documentation
-
-- [Concepts → What is a dynamic harness?](docs/concepts/what-is-a-dynamic-harness.md)
-- [Concepts → The 5-stage pipeline](docs/concepts/the-5-stage-pipeline.md)
-- [Concepts → Why this matters for AGI](docs/concepts/why-this-matters-for-agi.md)
-- [Guides → Custom validators](docs/guides/custom-validators.md)
-- [Guides → Self-hosting with Ollama](docs/guides/self-hosting-with-ollama.md)
-- [API reference](docs/reference/index.md)
-
-Full site: **[jcaiagent7143-ui.github.io/aegis](https://jcaiagent7143-ui.github.io/aegis)** (run `mkdocs serve` locally).
-
----
-
-## Validating against a real LLM
-
-Don't trust the README — prove it. Set a key and run the one-shot validator:
-
-```bash
-export OPENAI_API_KEY=sk-...
-export AEGIS_MODEL=gpt-4o-mini          # or gpt-5.4-nano-2026-03-17, gpt-5, etc.
-python scripts/run_live.py
-```
-
-This runs **7 checks** against the live API: single-turn, multi-turn tool use,
-JSON mode, streaming, the full 5-stage pipeline on 3 diverse goals, sandbox
-timeout enforcement, and a mini benchmark (raw vs fixed vs Aegis). Exits 0
-when everything's green. The same checks run as recorded VCR tests in
-`tests/integration/` for CI.
 
 ## Status
 
-**v0.2** — Stable beta. Multi-turn tool use verified against real LLMs, sandbox
-hardened with wall-clock + memory limits, streaming, retry/rate-limit handling,
-VCR integration tests. See [CHANGELOG.md](CHANGELOG.md) for the full v0.1 → v0.2
-fix list.
+`harness-kit` 0.2.1 — first public release. Following [Semantic Versioning](https://semver.org).
 
-Roadmap:
-- v0.3 — Live-streaming web demo UI, multi-agent goals (one harness per sub-agent)
-- v0.4 — Self-improving risk catalog (cache learns new failure modes from observed failures)
-- v1.0 — Stable API, paper, broad provider parity matrix
-
----
-
-## Contributing
-
-This is meant to be **the** canonical OSS reference for self-harnessing agents. Issues and PRs are very welcome. Particularly looking for:
-
-- New entries in the risk catalog (failure modes you've actually observed in production)
-- Provider adapters
-- Cookbook examples in your domain
-- Benchmark tasks
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). Look for `good first issue` labels.
-
----
-
-## Citation
-
-```bibtex
-@software{aegis_harness_2026,
-  title   = {Aegis: Dynamic, On-The-Fly Generated Harnesses for AI Agents},
-  author  = {The Aegis Contributors},
-  year    = {2026},
-  url     = {https://github.com/jcaiagent7143-ui/aegis},
-  version = {0.1.0},
-}
-```
-
----
+Feedback welcome via issues — see [CONTRIBUTING.md](CONTRIBUTING.md) and
+[SECURITY.md](SECURITY.md). The 5 shipped blueprints are intentionally
+opinionated; PRs proposing a 6th are encouraged. Sales / browser blueprints
+land in 0.3 alongside auth-bearing MCP catalog entries.
 
 ## License
 
-[MIT](LICENSE). Use it for anything.
+MIT — see [LICENSE](LICENSE).

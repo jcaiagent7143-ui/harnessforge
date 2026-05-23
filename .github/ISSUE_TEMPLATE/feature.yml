@@ -5,10 +5,37 @@ body:
   - type: textarea
     attributes:
       label: The use case
-      description: What are you trying to do? What's missing?
+      description: What are you trying to do? What's missing today?
+      placeholder: |
+        I'm building a … agent in a … project and I want to …
+        Today I have to hand-author … which feels like it should be in a blueprint.
     validations:
       required: true
   - type: textarea
     attributes:
-      label: Proposed solution
+      label: Proposed shape
       description: If you have one. (Skip if you'd rather brainstorm in comments.)
+      placeholder: |
+        Maybe a new blueprint `…` that ships skills X, Y, Z.
+        Or a new CLI flag `harness … --…`.
+  - type: dropdown
+    attributes:
+      label: Category
+      multiple: true
+      options:
+        - New blueprint (e.g. sales-agent, browser-agent)
+        - New skill in an existing blueprint
+        - New IDE adapter
+        - New MCP server in the catalog
+        - CLI enhancement
+        - Validator enhancement
+        - Docs / cookbook
+        - Other
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I checked existing issues and didn't find a duplicate
+        - label: I read the `vs Hermes / OpenClaw / OpenHarness` doc — this isn't a "we should be a runtime" request

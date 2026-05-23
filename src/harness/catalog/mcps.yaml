@@ -1,0 +1,157 @@
+# Curated MCP server catalog.
+# Each entry: {name, command, description, requires_auth, agent_types[], install_hint}.
+# All OSS / no-auth in v0.1. Auth-bearing servers (Salesforce, Stripe, etc.)
+# land in v0.2 alongside the sales-agent / finance-agent blueprints.
+
+schema_version: 1
+servers:
+  - name: filesystem
+    command: "npx -y @modelcontextprotocol/server-filesystem"
+    description: "Read/write files under a sandboxed directory."
+    requires_auth: false
+    agent_types: [rag, support, workflow, sales, browser, finance]
+
+  - name: fetch
+    command: "npx -y @modelcontextprotocol/server-fetch"
+    description: "HTTP GET/POST/PUT/DELETE. Honors robots.txt by default."
+    requires_auth: false
+    agent_types: [rag, support, workflow, browser]
+
+  - name: git
+    command: "npx -y @modelcontextprotocol/server-git"
+    description: "git status / log / diff / show for a repo."
+    requires_auth: false
+    agent_types: [workflow, support]
+
+  - name: github
+    command: "npx -y @modelcontextprotocol/server-github"
+    description: "PRs, issues, Actions, file commits. Needs GITHUB_TOKEN."
+    requires_auth: true
+    agent_types: [support, workflow]
+    install_hint: "Set GITHUB_TOKEN env var; PAT with `repo` scope is enough for most tasks."
+
+  - name: postgres
+    command: "npx -y @modelcontextprotocol/server-postgres"
+    description: "Read-only SQL against a Postgres database. Needs DATABASE_URL."
+    requires_auth: true
+    agent_types: [rag, support, workflow, finance]
+
+  - name: sqlite
+    command: "npx -y @modelcontextprotocol/server-sqlite"
+    description: "Read/write SQLite for local prototypes."
+    requires_auth: false
+    agent_types: [rag, workflow]
+
+  - name: qdrant
+    command: "pipx run mcp-server-qdrant"
+    description: "Vector store backed by Qdrant. Preferred for >100k chunks."
+    requires_auth: false
+    agent_types: [rag]
+
+  - name: chroma
+    command: "pipx run mcp-server-chroma"
+    description: "Local vector store; preferred for prototypes <100k chunks."
+    requires_auth: false
+    agent_types: [rag]
+
+  - name: slack
+    command: "npx -y @modelcontextprotocol/server-slack"
+    description: "Send messages to a Slack workspace. Needs SLACK_BOT_TOKEN."
+    requires_auth: true
+    agent_types: [support, workflow]
+
+  - name: linear
+    command: "npx -y mcp-server-linear"
+    description: "Linear issue tracking. Needs LINEAR_API_KEY."
+    requires_auth: true
+    agent_types: [support, workflow]
+
+  - name: shell
+    command: "npx -y @modelcontextprotocol/server-shell"
+    description: "Run shell commands. Disabled by default; opt-in via config."
+    requires_auth: false
+    agent_types: [workflow]
+
+  - name: time
+    command: "npx -y @modelcontextprotocol/server-time"
+    description: "Current time, timezones, scheduling helpers."
+    requires_auth: false
+    agent_types: [workflow, support, finance]
+
+  - name: memory
+    command: "npx -y @modelcontextprotocol/server-memory"
+    description: "Simple key-value memory across sessions."
+    requires_auth: false
+    agent_types: [rag, support, workflow]
+
+  - name: brave-search
+    command: "npx -y @modelcontextprotocol/server-brave-search"
+    description: "Web search via Brave. Needs BRAVE_API_KEY."
+    requires_auth: true
+    agent_types: [rag, workflow]
+
+  - name: puppeteer
+    command: "npx -y @modelcontextprotocol/server-puppeteer"
+    description: "Headless browser automation. (Use for browser-agent in v0.2.)"
+    requires_auth: false
+    agent_types: [browser]
+
+  - name: docker
+    command: "npx -y mcp-server-docker"
+    description: "List/start/stop containers. Local Docker socket."
+    requires_auth: false
+    agent_types: [workflow, infra]
+
+  - name: kubernetes
+    command: "npx -y mcp-server-kubernetes"
+    description: "Read kube state. Refuses production contexts by default."
+    requires_auth: false
+    agent_types: [infra, workflow]
+
+  - name: aws
+    command: "pipx run mcp-server-aws"
+    description: "AWS read-only API. Needs ~/.aws/credentials."
+    requires_auth: true
+    agent_types: [infra, workflow]
+
+  - name: notion
+    command: "npx -y @notionhq/notion-mcp-server"
+    description: "Notion pages + databases. Needs NOTION_API_KEY."
+    requires_auth: true
+    agent_types: [rag, support, workflow]
+
+  - name: gdrive
+    command: "npx -y @modelcontextprotocol/server-gdrive"
+    description: "Google Drive files. OAuth flow."
+    requires_auth: true
+    agent_types: [rag, workflow]
+
+  - name: stripe
+    command: "npx -y mcp-server-stripe"
+    description: "Stripe read-only (charges, customers). Needs STRIPE_API_KEY."
+    requires_auth: true
+    agent_types: [support, finance]
+
+  - name: sentry
+    command: "npx -y mcp-server-sentry"
+    description: "Read Sentry issues. Needs SENTRY_AUTH_TOKEN."
+    requires_auth: true
+    agent_types: [support, workflow]
+
+  - name: jira
+    command: "npx -y mcp-server-jira"
+    description: "Jira issues + boards. Needs JIRA_API_TOKEN."
+    requires_auth: true
+    agent_types: [support, workflow]
+
+  - name: clickhouse
+    command: "pipx run mcp-clickhouse"
+    description: "ClickHouse read-only analytics."
+    requires_auth: true
+    agent_types: [rag, workflow]
+
+  - name: redis
+    command: "npx -y mcp-server-redis"
+    description: "Redis k/v + pubsub."
+    requires_auth: false
+    agent_types: [workflow]

@@ -1,0 +1,29 @@
+# Sample eval questions for the support-agent blueprint.
+# Each row simulates an inbound message + the expected classification + action.
+
+defaults:
+  min_intent_accuracy: 0.85
+  min_lineage_completeness: 1.0
+
+cases:
+  - inbound: "How do I reset my password?"
+    expected_intent: question
+    expected_action: answered
+
+  - inbound: "I got a 500 error trying to upload my CSV — looks like 30MB is too big?"
+    expected_intent: bug
+    expected_action: ticketed
+    expected_priority: P2
+
+  - inbound: "Can you add Google SSO?"
+    expected_intent: feature
+    expected_action: ticketed
+    expected_priority: P3
+
+  - inbound: "I was charged twice for May — please refund."
+    expected_intent: billing
+    expected_action: escalated
+
+  - inbound: "thanks!"
+    expected_intent: other
+    expected_action: answered

@@ -1,0 +1,41 @@
+# TOOLS.md — {{ profile.name }} support agent
+
+## Recommended MCP servers
+
+{% for m in pruned_mcps %}
+- **{{ m }}** — {{ {
+    "filesystem": "Read the KB markdown corpus + write conversation logs.",
+    "fetch": "HTTP GET for any linked URL the user provides.",
+    "postgres": "Conversation + ticket store.",
+    "github": "Create / read tickets if you use GH Issues as your tracker.",
+    "slack": "Notify on escalation; send the lineage link.",
+    "linear": "If using Linear as the ticket tracker.",
+}.get(m, "See the MCP server's own docs.") }}
+{% endfor %}
+
+## Built-in skills
+
+{{ skills_list }}
+
+See `SKILLS/<name>/SKILL.md`.
+
+## SLA matrix
+
+| Priority | First-response SLA | Resolve SLA |
+|----------|--------------------|-------------|
+| P0       | 15 min             | 4 hr        |
+| P1       | 1 hr               | 1 day       |
+| P2       | 4 hr               | 3 days      |
+| P3       | 1 day              | 1 week      |
+
+`harness verify --check sla` confirms every ticket priority is in this matrix.
+
+## Project-local tools
+
+{% if profile.test_command -%}- `{{ profile.test_command }}` — run tests
+{% endif -%}
+{% if profile.lint_command -%}- `{{ profile.lint_command }}` — lint
+{% endif -%}
+- `./scripts/test_task.sh "<inbound>"` — replay a sample inbound message
+- `harness verify --json` — full validator run
+- `harness verify --check ticket_lineage` — only the lineage check

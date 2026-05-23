@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness-kit/rag-agent/conversation",
+  "title": "RAG conversation memory",
+  "type": "object",
+  "required": ["messages", "retrieved_chunks"],
+  "properties": {
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "content", "ts"],
+        "properties": {
+          "role": {"enum": ["user", "assistant", "system"]},
+          "content": {"type": "string"},
+          "ts": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "retrieved_chunks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["chunk_id", "score", "used_in_turn"],
+        "properties": {
+          "chunk_id": {"type": "string", "pattern": "^[A-Za-z0-9_-]{4,64}$"},
+          "score": {"type": "number"},
+          "used_in_turn": {"type": "integer", "minimum": 0}
+        }
+      }
+    }
+  }
+}

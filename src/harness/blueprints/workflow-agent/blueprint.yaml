@@ -1,0 +1,32 @@
+name: workflow-agent
+version: 1.0.0
+display_name: "Workflow Agent"
+description: "Orchestrate tools and APIs to complete multi-step tasks (Zapier/n8n-style)."
+agent_type: workflow
+suitable_for:
+  project_types: [web-app, web-api, library, cli, infra, other]
+  languages: [python, typescript, javascript, go, rust]
+recommended_mcps:
+  - filesystem
+  - fetch
+  - shell
+  - github
+  - postgres
+memory_schemas:
+  - conversation
+skills:
+  - decompose-task
+  - call-tool-with-retry
+  - check-result
+generated_files:
+  - { path: AGENTS.md,                template: AGENTS.md.j2 }
+  - { path: SOUL.md,                  template: SOUL.md.j2 }
+  - { path: TOOLS.md,                 template: TOOLS.md.j2 }
+  - { path: MEMORY.md,                template: MEMORY.md.j2 }
+  - { path: scripts/test_task.sh,     template: test_task.sh.j2, mode: 493 }
+  - { path: scripts/verify_output.py, template: verify_output.py.j2 }
+validators:
+  - { name: structure,  module: check_structure,  description: "Every generated file present and parses." }
+  - { name: tool_log,   module: check_tool_log,   description: "Every tool call has args + result recorded." }
+  - { name: idempotent, module: check_idempotent, description: "Final step is marked idempotent (safe to retry)." }
+eval_set: eval/questions.yaml

@@ -1,0 +1,49 @@
+"""verify_output.py — confirm one support-agent reply/ticket is well-formed."""
+from __future__ import annotations
+
+import json
+from typing import Any
+
+VALID_INTENTS = {"question", "bug", "feature", "billing", "other"}
+VALID_PRIORITIES = {"P0", "P1", "P2", "P3"}
+
+
+def verify(payload_json: str | dict[str, Any]) -> list[str]:
+    failures: list[str] = []
+    try:
+        payload = payload_json if isinstance(payload_json, dict) else json.loads(payload_json)
+    except (json.JSONDecodeError, TypeError) as e:
+        return [f"output is not valid JSON: {e}"]
+
+    if not isinstance(payload, dict):
+        return [f"output must be an object, got {type(payload).__name__}"]
+
+    intent = payload.get("intent")
+    if intent not in VALID_INTENTS:
+        failures.append(f"intent {intent!r} not in {sorted(VALID_INTENTS)}")
+
+    action = payload.get("action")
+    if action not in {"answered", "ticketed", "escalated"}:
+        failures.append(f"action {action!r} must be answered|ticketed|escalated")
+
+    lineage = payload.get("lineage")
+    if not isinstance(lineage, list) or not lineage:
+        failures.append("lineage must be a non-empty list of {turn,message_id}")
+
+    if action == "answered" and not payload.get("reply"):
+        failures.append("action=answered requires a non-empty 'reply'")
+
+    if action in {"ticketed", "escalated"}:
+        ticket = payload.get("ticket")
+        if not isinstance(ticket, dict):
+            failures.append(f"action={action} requires a 'ticket' object")
+        else:
+            for k in ("ticket_id", "conversation_id", "priority"):
+                if k not in ticket:
+                    failures.append(f"ticket missing {k!r}")
+            if ticket.get("priority") not in VALID_PRIORITIES:
+                failures.append(
+                    f"ticket.priority {ticket.get('priority')!r} must be in {sorted(VALID_PRIORITIES)}"
+                )
+
+    return failures

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# test_task.sh — run the project's tests + lint as a quick CI-lite check.
+set -euo pipefail
+
+echo "[python-cli-app] verifying project at $(pwd)"
+harness verify --check structure --json
+{% if profile.test_command -%}
+echo "[python-cli-app] running tests: {{ profile.test_command }}"
+{{ profile.test_command }}
+{% else -%}
+echo "[python-cli-app] no test_command declared in profile — skipping tests"
+{% endif -%}
+{% if profile.lint_command -%}
+echo "[python-cli-app] running lint: {{ profile.lint_command }}"
+{{ profile.lint_command }}
+{% else -%}
+echo "[python-cli-app] no lint_command declared in profile — skipping lint"
+{% endif %}
+
+echo "[python-cli-app] ✓ done"

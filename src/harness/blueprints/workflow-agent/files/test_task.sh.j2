@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# test_task.sh — replay one workflow task end-to-end.
+set -euo pipefail
+
+if [ "${1:-}" = "" ]; then
+  echo "usage: $0 \"<task description>\""
+  exit 64
+fi
+
+TASK="$1"
+OUT="${WORKFLOW_OUT:-/tmp/{{ profile.name }}-workflow-output.json}"
+
+echo "[workflow] task: $TASK"
+echo "[workflow] writing output to: $OUT"
+echo "[workflow] your agent should populate \$OUT with: {plan[], tool_log[], final_status, idempotent_marker}"
+
+if [ ! -f "$OUT" ]; then
+  echo "[workflow] expected $OUT after the agent runs. Skipping verify."
+  exit 0
+fi
+
+harness verify --json

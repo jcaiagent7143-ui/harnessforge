@@ -1,0 +1,28 @@
+# Sample eval question set for the RAG agent blueprint.
+# Replace these with questions specific to your corpus before shipping.
+#
+# Each entry:
+#   question:        the user's question (string)
+#   gold_chunk_ids:  list of chunk_ids that *must* be retrieved
+#   must_include:    optional substring the answer should contain
+#   notes:           free-form for humans
+
+defaults:
+  min_recall: 0.7
+  min_precision: 0.5
+
+questions:
+  - question: "What is this project's stated goal?"
+    gold_chunk_ids: ["readme-001"]
+    must_include: "goal"
+
+  - question: "Which programming language is used?"
+    gold_chunk_ids: ["readme-002"]
+
+  - question: "How do I run the tests?"
+    gold_chunk_ids: ["readme-003", "contrib-001"]
+    must_include: "pytest"
+
+  - question: "What is forbidden to commit?"
+    gold_chunk_ids: ["agents-md-001"]
+    must_include: "secrets"

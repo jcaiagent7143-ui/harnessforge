@@ -1,102 +1,65 @@
 # Quickstart
 
-## Install
+## Three commands
 
 ```bash
-pip install self-harness[all]
+# 1. Run init in your repo (no install needed)
+uvx harness-kit init --no-llm
+
+# 2. See what got written
+ls -A | grep -E '^(AGENTS|SOUL|TOOLS|MEMORY)\.md$|^SKILLS|^harness.config|^.harness'
+
+# 3. Verify
+uvx harness-kit verify --json
 ```
 
-The `[all]` extra pulls in every provider (Anthropic, OpenAI, Ollama, LiteLLM), plus the web demo and TUI. If you want a leaner install:
+## What `init` does
+
+1. Walks the repo and runs `inspect_repo` (deterministic, no LLM).
+2. Builds a `HarnessProfile` — your project's name, type, language, commands, forbidden paths.
+3. Picks a blueprint (`rag-agent`, `support-agent`, or `workflow-agent`) based on the inspection.
+4. Renders five IDE adapter files (`.claude/CLAUDE.md`, `.cursor/rules`, `.continue/config.json`, `.windsurf/rules`, `AGENTS.md`).
+5. Renders the blueprint's `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `MEMORY.md`, scripts, and SKILLS.
+6. Writes a `harness.config.json` and `.harness/manifest.json` for safe re-runs.
+
+## Pick a specific blueprint
 
 ```bash
-pip install self-harness                  # core only (works with Mock provider)
-pip install self-harness[anthropic]       # + Anthropic
-pip install self-harness[openai]          # + OpenAI
-pip install self-harness[web]             # + FastAPI demo
+uvx harness-kit init --blueprint rag-agent
+uvx harness-kit init --blueprint support-agent
+uvx harness-kit init --blueprint workflow-agent
 ```
 
-## Set a provider
-
-Aegis picks the first configured provider in the order: Anthropic → OpenAI → Ollama → Mock.
+## Use a specific LLM as the profiler
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
-# or
-export OPENAI_API_KEY=sk-...
-# or run a local Ollama server (default localhost:11434)
+export ANTHROPIC_API_KEY=...
+pip install 'harness-kit[anthropic]'
+harness init                           # uses Claude to refine the profile
 ```
 
-If no provider is configured, Aegis falls back to the **Mock** provider so the package always runs out of the box for exploration.
-
-## CLI
+Or skip the LLM entirely:
 
 ```bash
-aegis run "Find 3 OSS LLM agent frameworks and verify each URL"
+harness init --no-llm                  # deterministic; no API key needed
 ```
 
-This will:
-
-1. Analyze the goal.
-2. Identify failure modes (citation hallucination, truncated list, …).
-3. Generate a tailored harness — printed for you to read.
-4. Execute the agent inside it.
-5. Verify the result.
-
-Other commands:
+## Dry-run
 
 ```bash
-aegis inspect <run-id>      # Pretty-print a past audit trail
-aegis replay <run-id>       # Re-execute against a saved harness
-aegis cache list            # See learned harnesses
-aegis cache show <hash>     # Inspect a cached harness
-aegis serve                 # Start the web demo on :8000
-aegis bench --quick         # Run a 5-task benchmark smoke test
+harness init --dry-run                 # shows the plan; writes nothing
 ```
 
-## Python
+## Re-render after editing the profile
 
-```python
-import asyncio
-from aegis import Aegis
-
-async def main():
-    aegis = Aegis()
-    result = await aegis.run("What is the highest-revenue product in sales.csv?")
-    print(result.value)
-    print(result.harness_code)
-
-asyncio.run(main())
+```bash
+# Edit .harness/profile.yaml by hand, then:
+harness sync                           # re-renders adapter + blueprint files
+harness sync --check                   # CI mode: exit 1 if anything drifted
 ```
-
-## Picking a provider explicitly
-
-```python
-from aegis import Aegis
-from aegis.providers import Anthropic, OpenAI, Ollama, LiteLLM
-
-Aegis(provider=Anthropic())                          # Claude (default)
-Aegis(provider=OpenAI())                             # GPT
-Aegis(provider=Ollama(model="llama3.1:70b"))         # local, free
-Aegis(provider=LiteLLM(model="bedrock/claude-3"))    # 100+ providers
-```
-
-## Where Aegis stores state
-
-By default, audit trails and the harness cache live in `.aegis/` in your current directory:
-
-```
-.aegis/
-├── runs/
-│   └── run_<id>.json     # one per run
-└── harnesses/
-    ├── index.json
-    └── <hash>.json       # one per cached harness
-```
-
-Override with `Aegis(cache_dir="/some/path")` or `aegis run --cache-dir /some/path`.
 
 ## Next
 
-- [The 5-stage pipeline](../concepts/the-5-stage-pipeline.md)
-- [Custom validators](custom-validators.md)
-- [Self-hosting with Ollama](self-hosting-with-ollama.md)
+- [Bring your own coding agent](bring-your-own-coding-agent.md) — wire harness output into Claude Code, Cursor, etc.
+- [MCP server](mcp-server.md) — connect `harness mcp` to any MCP client.
+- [Authoring a custom skill](authoring-a-skill.md) — extend SKILLS/ with project-specific procedures.

@@ -5,27 +5,52 @@ body:
   - type: textarea
     attributes:
       label: What happened?
-      description: A clear, concise description.
+      description: A clear, concise description. Include the command you ran.
+      placeholder: |
+        I ran `harness init` and …
+        Expected …
+        Actually got …
     validations:
       required: true
   - type: input
     attributes:
-      label: Goal text
-      placeholder: The goal you passed to Aegis
+      label: harness-kit version
+      description: Run `harness version`
+      placeholder: harness-kit 0.2.1
+    validations:
+      required: true
   - type: input
     attributes:
-      label: Provider
-      placeholder: anthropic / openai / ollama / litellm / mock
+      label: Blueprint
+      placeholder: rag-agent / support-agent / workflow-agent / python-cli-app / finance-agent / n/a
+  - type: input
+    attributes:
+      label: OS / Python
+      placeholder: macOS 14 · Python 3.12.0
+    validations:
+      required: true
   - type: textarea
     attributes:
-      label: Audit JSON
-      description: Drop the contents of `.aegis/runs/<run_id>.json` here (please redact secrets).
+      label: '.harness/profile.yaml (if relevant)'
+      description: Paste the profile that was generated. Redact anything sensitive.
+      render: yaml
+  - type: textarea
+    attributes:
+      label: 'harness verify --json output (if relevant)'
+      description: Output of `harness verify --json` if your bug is in the validator path.
       render: json
   - type: textarea
     attributes:
-      label: Environment
-      description: aegis version, Python version, OS
+      label: Steps to reproduce
+      description: Ideally a minimal repo we can clone and reproduce.
       placeholder: |
-        aegis 0.1.0
-        Python 3.12.0
-        macOS 14
+        1. Create empty dir
+        2. `harness init --no-llm`
+        3. `harness verify --json`
+        4. See …
+  - type: checkboxes
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I checked `harness doctor` shows my env is set up correctly
+        - label: I'm on the latest harness-kit (`pip install -U harness-kit`)

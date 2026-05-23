@@ -1,0 +1,34 @@
+name: support-agent
+version: 1.0.0
+display_name: "Support Agent"
+description: "Customer support automation: intent → KB retrieval → ticket creation with SLA + escalation lineage."
+agent_type: support
+suitable_for:
+  project_types: [web-app, web-api]
+  languages: [python, typescript, javascript]
+recommended_mcps:
+  - filesystem
+  - fetch
+  - postgres
+  - github
+  - slack
+memory_schemas:
+  - conversation
+  - ticket-history
+skills:
+  - classify-intent
+  - retrieve-kb-answer
+  - file-ticket
+  - escalate-if-unresolved
+generated_files:
+  - { path: AGENTS.md,                template: AGENTS.md.j2 }
+  - { path: SOUL.md,                  template: SOUL.md.j2 }
+  - { path: TOOLS.md,                 template: TOOLS.md.j2 }
+  - { path: MEMORY.md,                template: MEMORY.md.j2 }
+  - { path: scripts/test_task.sh,     template: test_task.sh.j2, mode: 493 }
+  - { path: scripts/verify_output.py, template: verify_output.py.j2 }
+validators:
+  - { name: structure,       module: check_structure,       description: "Every generated file is present and parses." }
+  - { name: ticket_lineage,  module: check_ticket_lineage,  description: "Every created ticket links to a conversation turn." }
+  - { name: sla,             module: check_sla,             description: "Ticket priorities map to documented SLAs." }
+eval_set: eval/questions.yaml

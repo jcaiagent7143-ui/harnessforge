@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness-kit/finance-agent/conversation",
+  "title": "Finance analyst conversation memory",
+  "type": "object",
+  "required": ["messages"],
+  "properties": {
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "content", "ts"],
+        "properties": {
+          "role": {"enum": ["user", "assistant", "system"]},
+          "content": {"type": "string"},
+          "ts": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "fetched_in_session": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ticker", "source", "fetched_at"],
+        "properties": {
+          "ticker": {"type": "string"},
+          "source": {"type": "string"},
+          "fetched_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "approvals_granted": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["action", "ts", "scope"],
+        "properties": {
+          "action": {"type": "string"},
+          "ts": {"type": "string", "format": "date-time"},
+          "scope": {"enum": ["one-shot", "session"]}
+        }
+      }
+    }
+  }
+}

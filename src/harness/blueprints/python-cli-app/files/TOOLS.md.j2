@@ -1,0 +1,59 @@
+# TOOLS.md — {{ profile.name }}
+
+## Project-local commands (use these — don't reinvent)
+
+{% if profile.test_command -%}
+- **Tests**: `{{ profile.test_command }}` — declared in `.harness/profile.yaml`. Don't substitute another runner.
+{% else -%}
+- **Tests**: _not yet declared_ — ask the user "pytest or unittest?" before introducing one.
+{% endif -%}
+{% if profile.lint_command -%}
+- **Lint**: `{{ profile.lint_command }}` — declared. Run before declaring done.
+{% else -%}
+- **Lint**: _not yet declared_ — ask the user "ruff or flake8?" before introducing one.
+{% endif -%}
+{% if profile.build_command -%}
+- **Build**: `{{ profile.build_command }}`
+{% endif -%}
+{% if profile.dev_command -%}
+- **Dev / Run**: `{{ profile.dev_command }}`
+{% endif %}
+
+## Dependency manager
+
+The project uses `pyproject.toml` with these declared deps. To add one:
+
+```bash
+# Edit pyproject.toml [project.dependencies], then:
+pip install -e .
+# Or if the project uses uv:
+uv sync
+```
+
+Do not introduce a parallel `requirements.txt` — one source of truth.
+
+## Recommended MCP servers
+
+{% for m in pruned_mcps %}
+- **{{ m }}** — {{ {
+    "filesystem": "Read/write project files.",
+    "git": "git status / log / diff for inspecting changes.",
+    "fetch": "HTTP requests for fetching external resources (rare in CLI apps).",
+    "github": "PRs / issues if you're contributing to an OSS project.",
+}.get(m, "See the MCP server's own docs.") }}
+{% endfor %}
+
+## Built-in skills
+
+{{ skills_list }}
+
+See `SKILLS/<name>/SKILL.md` for each.
+
+## Validation
+
+```bash
+harness verify --check structure   # blueprint files present
+harness verify --check tests       # project test_command exits 0
+harness verify --check lint        # project lint_command exits 0
+harness verify --json              # all of the above as JSON
+```

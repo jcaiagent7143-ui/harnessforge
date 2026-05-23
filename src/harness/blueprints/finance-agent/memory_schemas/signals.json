@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness-kit/finance-agent/signals",
+  "title": "Generated analytical signals",
+  "type": "object",
+  "required": ["generated_at", "signals"],
+  "properties": {
+    "generated_at": {"type": "string", "format": "date-time"},
+    "signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ticker", "kind", "indicator", "source", "data_as_of"],
+        "properties": {
+          "ticker": {"type": "string"},
+          "kind": {"type": "string", "description": "e.g. overbought, oversold, golden_cross, death_cross"},
+          "value": {"type": "number"},
+          "threshold": {"type": "number"},
+          "indicator": {"type": "string", "description": "e.g. RSI-14, SMA-50/200"},
+          "source": {"type": "string", "description": "yfinance | polygon | alpaca | ..."},
+          "data_as_of": {"type": "string"}
+        }
+      }
+    }
+  }
+}

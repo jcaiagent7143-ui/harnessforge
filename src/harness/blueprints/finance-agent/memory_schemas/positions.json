@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness-kit/finance-agent/positions",
+  "title": "User's declared portfolio positions",
+  "type": "object",
+  "required": ["as_of", "positions"],
+  "properties": {
+    "as_of": {"type": "string", "format": "date-time"},
+    "positions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ticker", "shares"],
+        "properties": {
+          "ticker": {"type": "string", "pattern": "^[A-Z][A-Z0-9.\\-]{0,15}$"},
+          "shares": {"type": "number"},
+          "cost_basis_usd": {"type": "number"},
+          "account": {"type": "string"},
+          "as_of": {"type": "string", "format": "date-time"}
+        }
+      }
+    }
+  }
+}

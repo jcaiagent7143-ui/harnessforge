@@ -1,0 +1,57 @@
+# MEMORY.md — {{ profile.name }}
+
+> _Memory layout for the RAG agent. Three layers: session, persistent, skill-derived._
+
+## Layer 1 — Session memory
+
+Per-conversation state. Lives in the agent runtime; not persisted.
+
+Schema: `.harness/memory_schemas/conversation.json`
+
+```jsonc
+{
+  "messages": [{ "role": "user" | "assistant", "content": "...", "ts": "..." }],
+  "retrieved_chunks": [{"chunk_id": "...", "score": 0.0, "used_in_turn": 1}]
+}
+```
+
+## Layer 2 — Persistent corpus
+
+The indexed document chunks. Lives in the vector store (Qdrant / Chroma /
+Postgres-pgvector). Re-indexable from source.
+
+Schema: `.harness/memory_schemas/rag_chunks.json`
+
+```jsonc
+{
+  "chunk_id": "<stable-hash>",
+  "source": "<file or URL>",
+  "text": "...",
+  "embedding": [0.0, ...],
+  "metadata": {"section": "...", "page": 0, "indexed_at": "..."}
+}
+```
+
+## Layer 3 — Skill-derived memory
+
+When a skill (`SKILLS/<name>/SKILL.md`) produces a reusable artifact
+(e.g. a learned chunking heuristic, a tuned rerank threshold), it
+writes to:
+
+```
+.harness/skill_memory/<skill-name>/<artifact>.json
+```
+
+This is the only memory the agent should *create* on its own.
+
+## Retention policy
+
+- Session memory: discarded when the conversation closes.
+- Persistent corpus: rebuilt on `./scripts/test_task.sh --reindex`.
+- Skill memory: kept across sessions; archived on `harness sync --force`.
+- **Never** persist user PII without an explicit opt-in event in session memory.
+
+## Forbidden
+
+- Do not embed secrets, env values, or anything from `{{ profile.forbidden_paths | join(", ") }}` into the vector store.
+- Do not write to `.harness/memory_schemas/` — that's the schema, not data.

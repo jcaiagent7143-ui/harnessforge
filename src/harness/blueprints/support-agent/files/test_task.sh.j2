@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# test_task.sh — replay one inbound support message end-to-end.
+set -euo pipefail
+
+if [ "${1:-}" = "" ]; then
+  echo "usage: $0 \"<inbound message>\""
+  exit 64
+fi
+
+INBOUND="$1"
+OUT="${SUPPORT_OUT:-/tmp/{{ profile.name }}-support-output.json}"
+
+echo "[support] inbound: $INBOUND"
+echo "[support] writing handler output to: $OUT"
+echo "[support] your agent should populate \$OUT with: {intent, action, reply?, ticket?, lineage}"
+
+if [ ! -f "$OUT" ]; then
+  echo "[support] expected $OUT after the agent runs. Skipping verify."
+  exit 0
+fi
+
+harness verify --check ticket_lineage --json
+harness verify --check sla --json

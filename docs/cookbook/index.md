@@ -1,25 +1,16 @@
 # Cookbook
 
-Runnable, end-to-end examples that ship with the repo. Each one:
+End-to-end demos on real public repos. Each demo:
 
-- has a real-world goal,
-- demonstrates a different generated harness,
-- runs in under 30 seconds against any provider (Mock works for exploration).
+1. Clones a real OSS project at a pinned SHA
+2. Runs `harness init --no-llm` against it
+3. Shows the generated tree
+4. Runs `harness verify` to confirm everything passes
 
-| # | File | What it shows |
-|---|---|---|
-| 01 | [`examples/01_web_research.py`](https://github.com/jcaiagent7143-ui/aegis/blob/main/examples/01_web_research.py) | Citation verifier generated for an open-ended research goal |
-| 02 | [`examples/02_code_refactor.py`](https://github.com/jcaiagent7143-ui/aegis/blob/main/examples/02_code_refactor.py) | AST-diff + test-runner harness for a code task |
-| 03 | [`examples/03_data_analysis.py`](https://github.com/jcaiagent7143-ui/aegis/blob/main/examples/03_data_analysis.py) | Arithmetic re-checker for a CSV question |
-| 04 | [`examples/04_citation_verifier.py`](https://github.com/jcaiagent7143-ui/aegis/blob/main/examples/04_citation_verifier.py) | Side-by-side comparison: Aegis vs raw provider on URL validity |
-| 05 | [`examples/05_custom_provider.py`](https://github.com/jcaiagent7143-ui/aegis/blob/main/examples/05_custom_provider.py) | Plug in your own LLM endpoint |
-| 06 | [`examples/06_with_langchain_tools.py`](https://github.com/jcaiagent7143-ui/aegis/blob/main/examples/06_with_langchain_tools.py) | Use existing LangChain tools as Aegis tools |
-| 07 | [`examples/07_local_only_with_ollama.py`](https://github.com/jcaiagent7143-ui/aegis/blob/main/examples/07_local_only_with_ollama.py) | Fully offline, no API keys |
+The reproducibility scripts live under `examples/hero/` in the repo.
 
-Run any of them with:
+## Demos
 
-```bash
-python examples/01_web_research.py
-```
-
-Each script prints both the result and the generated harness so you can see what defenses Aegis built for that specific goal.
+- [FastAPI + RAG demo](fastapi-rag-demo.md) — `fastapi/full-stack-fastapi-template` × `rag-agent`
+- [Zulip + Support demo](zulip-support-demo.md) — `zulip/zulip` × `support-agent`
+- [Airflow + Workflow demo](airflow-workflow-demo.md) — `apache/airflow` × `workflow-agent`

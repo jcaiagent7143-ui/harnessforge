@@ -1,0 +1,23 @@
+[
+  ".claude/CLAUDE.md",
+  ".continue/config.json",
+  ".cursor/rules",
+  ".harness/manifest.json",
+  ".harness/memory_schemas/conversation.json",
+  ".harness/profile.yaml",
+  ".windsurf/rules",
+  "AGENTS.md",
+  "MEMORY.md",
+  "README.md",
+  "SKILLS/call-tool-with-retry/SKILL.md",
+  "SKILLS/check-result/SKILL.md",
+  "SKILLS/decompose-task/SKILL.md",
+  "SOUL.md",
+  "TOOLS.md",
+  "harness.config.json",
+  "package.json",
+  "pnpm-lock.yaml",
+  "scripts/test_task.sh",
+  "scripts/verify_output.py",
+  "tsconfig.json"
+]

@@ -1,0 +1,30 @@
+name: python-cli-app
+version: 1.0.0
+display_name: "Python CLI App / Library"
+description: "Build a Python CLI tool or library: opinionated layout, declared test runner, lint config, dep manager — so the coding agent stops guessing."
+agent_type: python-app
+suitable_for:
+  project_types: [cli, library, web-api]
+  languages: [python]
+recommended_mcps:
+  - filesystem
+  - git
+  - fetch
+memory_schemas:
+  - conversation
+skills:
+  - add-cli-command
+  - add-unit-test
+  - manage-dependency
+  - check-style
+generated_files:
+  - { path: AGENTS.md,                template: AGENTS.md.j2 }
+  - { path: SOUL.md,                  template: SOUL.md.j2 }
+  - { path: TOOLS.md,                 template: TOOLS.md.j2 }
+  - { path: MEMORY.md,                template: MEMORY.md.j2 }
+  - { path: scripts/test_task.sh,     template: test_task.sh.j2, mode: 493 }
+validators:
+  - { name: structure, module: check_structure, description: "Every generated file present and parses." }
+  - { name: tests,     module: check_tests,     description: "Project test_command exits 0." }
+  - { name: lint,      module: check_lint,      description: "Project lint_command exits 0." }
+eval_set: eval/questions.yaml

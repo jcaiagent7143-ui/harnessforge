@@ -1,0 +1,37 @@
+# TOOLS.md — {{ profile.name }}
+
+> _Tool surface for the RAG agent. Generated from `harness.config.json`._
+
+## Recommended MCP servers
+
+Connect these to give the agent retrieval + storage capabilities:
+
+{% for m in pruned_mcps %}
+- **{{ m }}** — {{ {
+    "filesystem": "Read/write local files (docs ingestion, chunk storage).",
+    "fetch": "HTTP GET for any cited URL (re-verify citations).",
+    "postgres": "Persist conversation + retrieval logs.",
+    "qdrant": "Vector store for embeddings (preferred for >100k chunks).",
+    "chroma": "Local vector store (preferred for prototypes <100k chunks).",
+    "git": "Inspect commit history of indexed source files.",
+    "github": "Issue + PR context if the corpus includes the repo's own history.",
+}.get(m, "See the MCP server's own docs.") }}
+{% endfor %}
+
+## Built-in skills
+
+{{ skills_list }}
+
+See `SKILLS/<name>/SKILL.md` for each skill's contract.
+
+## Project-local tools you may use
+
+{% if profile.test_command -%}- `{{ profile.test_command }}` — run the project's tests
+{% endif -%}
+{% if profile.lint_command -%}- `{{ profile.lint_command }}` — lint
+{% endif -%}
+{% if profile.build_command -%}- `{{ profile.build_command }}` — build
+{% endif %}
+- `./scripts/test_task.sh "<question>"` — run a sample RAG query end-to-end
+- `harness verify --json` — validate an output against blueprint contracts
+- `harness verify --check citations` — only run the citation validator

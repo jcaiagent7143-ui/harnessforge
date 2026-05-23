@@ -1,0 +1,68 @@
+# MEMORY.md — {{ profile.name }}
+
+> _Three-layer: session, positions, signals._
+
+## Layer 1 — Session memory
+
+Per-conversation analytical state. Lives in the agent runtime.
+
+```jsonc
+{
+  "messages": [...],
+  "fetched_in_session": [{"ticker": "...", "ts": "...", "source": "yfinance"}],
+  "approvals_granted": [{"action": "...", "ts": "...", "scope": "one-shot"}]
+}
+```
+
+**Approval scope is `one-shot` by default.** Approval for one trade does not grant approval for the next.
+
+## Layer 2 — Positions (the source of truth on what the user owns)
+
+Schema: `.harness/memory_schemas/positions.json`
+
+```jsonc
+{
+  "as_of": "2026-05-22T16:00:00-04:00",
+  "positions": [
+    {"ticker": "AAPL", "shares": 100, "cost_basis_usd": 180.50, "account": "taxable"}
+  ]
+}
+```
+
+**The agent reads this file. The agent does NOT write to it** unless the user has explicitly approved an edit in this session. New positions get added by the user — not by the agent — until the user wires up a synced broker.
+
+## Layer 3 — Signals (the analyst's output)
+
+Schema: `.harness/memory_schemas/signals.json`
+
+```jsonc
+{
+  "generated_at": "2026-05-22T16:05:00-04:00",
+  "signals": [
+    {
+      "ticker": "AAPL",
+      "kind": "overbought",
+      "value": 78.6,
+      "threshold": 70,
+      "indicator": "RSI-14",
+      "source": "yfinance",
+      "data_as_of": "2026-05-22"
+    }
+  ]
+}
+```
+
+This is the agent's **only** mutating output. Signals are write-only-by-agent, read-only-by-user.
+
+## Retention
+
+- Session: discarded on close.
+- Positions: kept indefinitely; user-owned.
+- Signals: rolling window (default 30 days); older signals archived to `.harness/signals_archive/`.
+- **Never persist API keys, account numbers, or PII.**
+
+## Forbidden
+
+- Don't log credentials or trade IDs.
+- Don't write to `{{ profile.forbidden_paths | join(", ") }}`.
+- Don't infer position quantities — if not in `positions.json`, ask the user.

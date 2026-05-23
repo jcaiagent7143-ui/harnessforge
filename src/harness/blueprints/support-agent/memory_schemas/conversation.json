@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness-kit/support-agent/conversation",
+  "title": "Support conversation memory",
+  "type": "object",
+  "required": ["conversation_id", "messages"],
+  "properties": {
+    "conversation_id": {"type": "string", "minLength": 1},
+    "messages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["role", "content", "ts", "message_id"],
+        "properties": {
+          "message_id": {"type": "string"},
+          "role": {"enum": ["user", "assistant", "system"]},
+          "content": {"type": "string"},
+          "ts": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "intent": {"type": "string"},
+    "kb_chunks_consulted": {
+      "type": "array",
+      "items": {"type": "string"}
+    }
+  }
+}

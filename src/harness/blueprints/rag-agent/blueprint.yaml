@@ -1,0 +1,34 @@
+name: rag-agent
+version: 1.0.0
+display_name: "RAG Agent"
+description: "Retrieval-augmented question answering with citation enforcement and recall/precision eval."
+agent_type: rag
+suitable_for:
+  project_types: [web-app, web-api, library, cli]
+  languages: [python, typescript, javascript]
+recommended_mcps:
+  - filesystem
+  - fetch
+  - postgres
+  - qdrant
+  - chroma
+memory_schemas:
+  - conversation
+  - rag-chunks
+skills:
+  - chunk-and-embed
+  - retrieve-and-rerank
+  - answer-with-citations
+  - eval-recall-precision
+generated_files:
+  - { path: AGENTS.md,                template: AGENTS.md.j2 }
+  - { path: SOUL.md,                  template: SOUL.md.j2 }
+  - { path: TOOLS.md,                 template: TOOLS.md.j2 }
+  - { path: MEMORY.md,                template: MEMORY.md.j2 }
+  - { path: scripts/test_task.sh,     template: test_task.sh.j2, mode: 493 }   # 0o755
+  - { path: scripts/verify_output.py, template: verify_output.py.j2 }
+validators:
+  - { name: structure,  module: check_structure,  description: "Every generated file is present and parses." }
+  - { name: citations,  module: check_citations,  description: "Output claims must cite chunk_ids." }
+  - { name: schema,     module: check_schema,     description: "Pydantic schema validates a sample answer." }
+eval_set: eval/questions.yaml

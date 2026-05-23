@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "harness-kit/rag-agent/rag-chunks",
+  "title": "RAG persistent chunk record",
+  "type": "object",
+  "required": ["chunk_id", "source", "text", "embedding"],
+  "properties": {
+    "chunk_id": {"type": "string", "pattern": "^[A-Za-z0-9_-]{4,64}$"},
+    "source": {"type": "string"},
+    "text": {"type": "string", "minLength": 1},
+    "embedding": {
+      "type": "array",
+      "items": {"type": "number"},
+      "minItems": 1
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "section": {"type": "string"},
+        "page": {"type": "integer", "minimum": 0},
+        "indexed_at": {"type": "string", "format": "date-time"},
+        "embedding_model": {"type": "string"}
+      }
+    }
+  }
+}

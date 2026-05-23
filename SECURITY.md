@@ -2,65 +2,77 @@
 
 ## Supported versions
 
-Aegis is at v0.4 (beta). The current minor line receives security fixes.
+The latest minor release (`harness-kit 0.2.x`) is supported with
+security fixes. Older versions and the legacy `self-harness` distribution
+are not.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.4.x   | :white_check_mark: |
-| < 0.4   | :x:                |
+| 0.2.x   | :white_check_mark: |
+| < 0.2   | :x:                |
 
 ## Reporting a vulnerability
 
-**Do not file a public GitHub issue for a security report.**
+**Do not** open a public GitHub issue for security vulnerabilities.
 
-Email **security@aegis-harness.dev** with:
+Use GitHub's private security advisory form:
 
-* A description of the vulnerability
-* Steps to reproduce (or a proof-of-concept)
-* The version you tested (`aegis version`)
-* Your name / handle if you'd like credit in the advisory
+→ `https://github.com/jcaiagent7143-ui/harness-kit/security/advisories/new`
 
-We aim to:
+Or, if you can't use GitHub's flow, send a private message to the
+maintainer.
 
-1. Acknowledge within **48 hours**.
-2. Provide a triage assessment within **7 days**.
-3. Ship a fix within **30 days** for high-severity issues, sooner for critical.
+You can expect:
 
-You may receive a CVE if the issue warrants one.
+- Acknowledgement within 5 working days.
+- A coordinated disclosure timeline once we agree on the scope of the fix.
+- Credit in the changelog (unless you'd rather stay anonymous).
 
-## Scope
+## What's in scope
 
-### In scope
+- Sandbox escapes in `aegis.synthesize.sandbox` (a blueprint validator that
+  escapes the AST allowlist + restricted exec to read/write outside the
+  user's repo, execute shell commands, exfiltrate env vars, etc.).
+- Path-traversal in the manifest / collision policy in `harness.provision`
+  (writing outside the user's `repo_root`).
+- Auth-token handling in `harness mcp` (leaking tokens to clients).
+- Vulnerabilities in the shipped MCP catalog (`harness.catalog.mcps`).
+- Dependency vulnerabilities surfaced by `pip-audit` / Dependabot.
 
-* Sandbox escapes in `aegis.synthesize.sandbox` (a generated harness that
-  reads or writes files outside the workspace, executes shell commands,
-  exfiltrates env vars, escapes the AST validator, etc.).
-* Prompt-injection paths that cause Aegis to leak the API key, the
-  conversation history, or the workspace contents to the model output.
-* Path-traversal in any built-in tool (`read_file`, `write_file`, `list_dir`).
-* Auth-handling bugs in `aegis proxy` (e.g. leaking the upstream `Authorization`
-  header to clients).
-* MCP server vulnerabilities (e.g. tool-call argument injection).
-* Dependency vulnerabilities in pinned versions.
+## What's NOT in scope (read the trust model first)
 
-### Out of scope
+`profile.test_command` and `profile.lint_command` are executed as shell
+commands by `harness verify --tests` and `harness verify --lint`. This
+is by design — they're how the project runs its own tests and linter.
 
-* The model itself producing incorrect or dangerous *content* — that's a
-  capability question, not a security one. (Aegis's job is to constrain
-  what the model can *do*, not what it can *say*.)
-* DoS via expensive prompts — rate limiting is the operator's responsibility.
-* Issues that require physical access to the host or root privileges.
+A maliciously-crafted `profile.yaml` that includes a destructive
+`test_command` is the same threat as a malicious `Makefile`,
+`npm test` script, or `pytest` plugin in `pyproject.toml`. **Trust the
+profile the same way you'd trust the rest of the repo.**
 
-## Hardening notes for production deployments
+See [`docs/concepts/trust-model.md`](docs/concepts/trust-model.md) for
+the full trust-boundary discussion. Reports along the lines of
+"a malicious profile.yaml runs arbitrary commands" will be closed as
+working-as-intended; the trust boundary is the git commit that added
+the profile, not the harness.
 
-* **Run untrusted goals inside process isolation.** Aegis's in-process sandbox
-  stops the obvious foot-guns but is not a hardened security boundary. For
-  multi-tenant / public-internet exposure, wrap Aegis in Docker, firejail,
-  gVisor, or a similar boundary.
-* **Set `AEGIS_WORKSPACE`** to a dedicated directory; the built-in file tools
-  refuse paths outside it.
-* **Use the proxy's `passthrough` mode sparingly** — it bypasses the harness.
-  Only enable for endpoints you control.
-* **Rotate API keys** if they ever appear in a log, chat transcript, or
-  audit-trail JSON. The audit trail does not log the key, but the model's
-  responses can sometimes echo input.
+Also out of scope:
+
+- DoS via expensive `harness init` runs on enormous repos — set a
+  `--max-files` flag for your CI if you need that constraint; the
+  inspector caps at 5000 files by default.
+- Issues that require physical access to the host or root privileges.
+
+## Hardening notes for production / CI deployments
+
+- **CI on external PRs**: run `harness verify` in an ephemeral runner
+  (GitHub Actions on `pull_request` does this by default for first-time
+  contributors). Don't run external-PR validators in a long-lived runner
+  with secrets attached.
+- **Pin harness-kit** in your CI's `requirements.txt` so a supply-chain
+  compromise of a future harness-kit release doesn't auto-apply.
+- **Audit `profile.yaml` diffs in PR review** — `test_command` /
+  `lint_command` changes are the only privileged fields.
+- **`harness mcp`** runs over stdio; treat the spawned process the same
+  way you'd treat any MCP server (the client decides which tools to call;
+  the server only does what it advertises).

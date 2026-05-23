@@ -1,0 +1,30 @@
+name: hero-demos
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Runs the three reproducibility scripts under examples/hero/.
+# Each clones a real public repo (shallow) and runs `harness init` + `harness verify`.
+# No LLM, no auth, no extras beyond core + git.
+
+jobs:
+  hero:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        demo: [fastapi_rag, zulip_support, airflow_workflow]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install harness-kit
+        run: pip install -e .
+      - name: Run hero demo (${{ matrix.demo }})
+        run: bash examples/hero/${{ matrix.demo }}/run.sh
