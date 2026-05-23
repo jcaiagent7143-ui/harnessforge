@@ -46,9 +46,7 @@ def blueprint_dir(name: str) -> Path:
     """Absolute path to a blueprint's directory."""
     d = _root() / name
     if not d.is_dir():
-        raise KeyError(
-            f"Blueprint {name!r} not found. Available: {sorted(_iter_names())}"
-        )
+        raise KeyError(f"Blueprint {name!r} not found. Available: {sorted(_iter_names())}")
     return d
 
 
@@ -106,9 +104,7 @@ def iter_catalog_skills() -> Iterator[tuple[str, Skill]]:
 # ── recommendation ────────────────────────────────────────────────────────
 
 
-def recommend_blueprint(
-    report: InspectionReport, profile: HarnessProfile
-) -> str:
+def recommend_blueprint(report: InspectionReport, profile: HarnessProfile) -> str:
     """Pick the most appropriate blueprint for a profile.
 
     Heuristic only — explicit ``--blueprint`` always wins. Order matters:
@@ -122,9 +118,18 @@ def recommend_blueprint(
 
     # Finance / market-data signal: deps + name + readme keywords
     finance_dep_signals = {
-        "yfinance", "alpaca-py", "alpaca", "ib_insync", "polygon",
-        "polygon-api-client", "ccxt", "alpha_vantage", "alpha-vantage",
-        "finnhub", "pandas-ta", "ta-lib",
+        "yfinance",
+        "alpaca-py",
+        "alpaca",
+        "ib_insync",
+        "polygon",
+        "polygon-api-client",
+        "ccxt",
+        "alpha_vantage",
+        "alpha-vantage",
+        "finnhub",
+        "pandas-ta",
+        "ta-lib",
     }
     finance_name_signals = {"stock", "portfolio", "trade", "trading", "broker", "crypto", "market"}
     finance_readme_signals = {"portfolio", "ticker", "stock", "broker", "market data", "trading"}
@@ -142,7 +147,11 @@ def recommend_blueprint(
 
     # Support signal: ticketing / helpdesk frameworks or "support"/"help" in name
     support_signals = {"django", "rails", "zulip", "discourse"}
-    if (support_signals & frameworks and pt == "web-app") or "support" in name_lc or "help" in name_lc:
+    if (
+        (support_signals & frameworks and pt == "web-app")
+        or "support" in name_lc
+        or "help" in name_lc
+    ):
         return "support-agent"
 
     # Workflow signal: explicit orchestration framing — task pipelines, ETL, agent runtime
@@ -156,7 +165,11 @@ def recommend_blueprint(
     # CLIs, libraries, web-apps, web-APIs — anything where the deliverable is
     # *code* rather than *an orchestration trace*.
     if profile.primary_language == "python" and pt in (
-        "cli", "library", "web-app", "web-api", "other"
+        "cli",
+        "library",
+        "web-app",
+        "web-api",
+        "other",
     ):
         return "python-cli-app"
 
@@ -334,11 +347,13 @@ def _merge_and_prune_mcps(
         if name in {"filesystem", "git", "time", "github", "slack", "linear", "qdrant", "chroma"}:
             return True
         if name == "postgres":
-            return any(s in dep_signal for s in ("postgres", "psycopg", "sqlalchemy", "database_url"))
+            return any(
+                s in dep_signal for s in ("postgres", "psycopg", "sqlalchemy", "database_url")
+            )
         if name == "fetch":
-            return (
-                bp.agent_type in {"finance", "rag", "workflow", "support"}
-                or any(s in dep_signal for s in ("httpx", "requests", "aiohttp", "fastapi", "flask", "django"))
+            return bp.agent_type in {"finance", "rag", "workflow", "support"} or any(
+                s in dep_signal
+                for s in ("httpx", "requests", "aiohttp", "fastapi", "flask", "django")
             )
         if name == "kubernetes":
             return report.has_kubernetes

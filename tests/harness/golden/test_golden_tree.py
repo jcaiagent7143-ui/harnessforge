@@ -22,13 +22,13 @@ from harness.provision import provision_sync
 
 # Each entry: (fixture_factory_name, blueprint, expected_path_set_filename)
 CASES: list[tuple[str, str, str]] = [
-    ("tmp_repo",         "rag-agent",      "py_rag.json"),
-    ("tmp_repo",         "support-agent",  "py_support.json"),
-    ("tmp_repo",         "workflow-agent", "py_workflow.json"),
-    ("tmp_node_repo",    "rag-agent",      "node_rag.json"),
-    ("tmp_node_repo",    "workflow-agent", "node_workflow.json"),
-    ("tmp_django_repo",  "support-agent",  "django_support.json"),
-    ("tmp_rag_repo",     "rag-agent",      "rag_repo_rag.json"),
+    ("tmp_repo", "rag-agent", "py_rag.json"),
+    ("tmp_repo", "support-agent", "py_support.json"),
+    ("tmp_repo", "workflow-agent", "py_workflow.json"),
+    ("tmp_node_repo", "rag-agent", "node_rag.json"),
+    ("tmp_node_repo", "workflow-agent", "node_workflow.json"),
+    ("tmp_django_repo", "support-agent", "django_support.json"),
+    ("tmp_rag_repo", "rag-agent", "rag_repo_rag.json"),
 ]
 
 _GOLDENS = Path(__file__).parent / "expected"
@@ -36,11 +36,7 @@ _GOLDENS = Path(__file__).parent / "expected"
 
 def _gather_relpaths(root: Path) -> list[str]:
     """Every file under root, repo-relative, sorted."""
-    return sorted(
-        str(p.relative_to(root))
-        for p in root.rglob("*")
-        if p.is_file()
-    )
+    return sorted(str(p.relative_to(root)) for p in root.rglob("*") if p.is_file())
 
 
 @pytest.mark.parametrize("fixture_name,blueprint,golden_file", CASES)

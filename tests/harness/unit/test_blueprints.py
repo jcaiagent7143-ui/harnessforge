@@ -38,7 +38,9 @@ def test_load_blueprint_unknown_raises() -> None:
         load_blueprint("does-not-exist")
 
 
-@pytest.mark.parametrize("name", ["rag-agent", "support-agent", "workflow-agent", "python-cli-app", "finance-agent"])
+@pytest.mark.parametrize(
+    "name", ["rag-agent", "support-agent", "workflow-agent", "python-cli-app", "finance-agent"]
+)
 def test_blueprint_spec_is_valid(name: str) -> None:
     bp = load_blueprint(name)
     assert isinstance(bp, BlueprintSpec)
@@ -51,7 +53,9 @@ def test_blueprint_spec_is_valid(name: str) -> None:
     assert bp.validators  # nonempty
 
 
-@pytest.mark.parametrize("name", ["rag-agent", "support-agent", "workflow-agent", "python-cli-app", "finance-agent"])
+@pytest.mark.parametrize(
+    "name", ["rag-agent", "support-agent", "workflow-agent", "python-cli-app", "finance-agent"]
+)
 def test_blueprint_has_skills(name: str) -> None:
     bp = load_blueprint(name)
     assert bp.skills, f"{name} declares no skills"
@@ -82,15 +86,20 @@ def test_recommend_default_for_python_project(tmp_repo: Path) -> None:
     profile = profile_from_inspection_template(report)
     rec = recommend_blueprint(report, profile)
     assert rec in {
-        "rag-agent", "support-agent", "workflow-agent",
-        "python-cli-app", "finance-agent",
+        "rag-agent",
+        "support-agent",
+        "workflow-agent",
+        "python-cli-app",
+        "finance-agent",
     }
 
 
 # ── renderer ───────────────────────────────────────────────────────────────
 
 
-@pytest.mark.parametrize("name", ["rag-agent", "support-agent", "workflow-agent", "python-cli-app", "finance-agent"])
+@pytest.mark.parametrize(
+    "name", ["rag-agent", "support-agent", "workflow-agent", "python-cli-app", "finance-agent"]
+)
 def test_render_blueprint_files_against_real_repo(tmp_repo: Path, name: str) -> None:
     bp = load_blueprint(name)
     report = inspect_repo(tmp_repo)
@@ -105,7 +114,9 @@ def test_render_blueprint_files_against_real_repo(tmp_repo: Path, name: str) -> 
     assert "MEMORY.md" in paths
 
 
-@pytest.mark.parametrize("name", ["rag-agent", "support-agent", "workflow-agent", "python-cli-app", "finance-agent"])
+@pytest.mark.parametrize(
+    "name", ["rag-agent", "support-agent", "workflow-agent", "python-cli-app", "finance-agent"]
+)
 def test_render_blueprint_skills_lays_out_SKILLS(tmp_repo: Path, name: str) -> None:
     bp = load_blueprint(name)
     files = render_blueprint_skills(bp, tmp_repo)

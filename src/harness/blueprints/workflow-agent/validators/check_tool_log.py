@@ -35,7 +35,9 @@ def run(target: Path) -> list[str]:
     for s in plan_steps_with_tools:
         step_id = s.get("step")
         if step_id not in logged_steps:
-            failures.append(f"plan step {step_id} ({s.get('name')!r}) used a tool but has no tool_log entry")
+            failures.append(
+                f"plan step {step_id} ({s.get('name')!r}) used a tool but has no tool_log entry"
+            )
 
     for i, e in enumerate(tool_log):
         if not isinstance(e, dict):

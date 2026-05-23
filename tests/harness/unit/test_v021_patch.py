@@ -34,7 +34,13 @@ def test_resolve_python_binary_returns_a_real_binary() -> None:
 def test_test_command_uses_resolved_python_binary(tmp_path: Path) -> None:
     """The default Python test command should embed the resolved binary,
     not blindly say `python` (which doesn't exist on stock macOS)."""
-    _seed(tmp_path, {"README.md": "# x", "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n'})
+    _seed(
+        tmp_path,
+        {
+            "README.md": "# x",
+            "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n',
+        },
+    )
     report = inspect_repo(tmp_path)
     profile = profile_from_inspection_template(report)
     assert profile.test_command is not None
@@ -48,7 +54,13 @@ def test_memory_schemas_copied_into_user_repo_for_finance_agent(tmp_path: Path) 
     """finance-agent ships positions.json + signals.json schemas.
     They must land in the user's .harness/memory_schemas/, not just
     be referenced from MEMORY.md (the v0.2 bug)."""
-    _seed(tmp_path, {"README.md": "# x", "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n'})
+    _seed(
+        tmp_path,
+        {
+            "README.md": "# x",
+            "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n',
+        },
+    )
     provision_sync(tmp_path, blueprint="finance-agent", no_llm=True)
     schema_dir = tmp_path / ".harness" / "memory_schemas"
     assert schema_dir.is_dir()
@@ -57,7 +69,13 @@ def test_memory_schemas_copied_into_user_repo_for_finance_agent(tmp_path: Path) 
 
 
 def test_memory_schemas_copied_for_rag_agent(tmp_path: Path) -> None:
-    _seed(tmp_path, {"README.md": "# x", "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n'})
+    _seed(
+        tmp_path,
+        {
+            "README.md": "# x",
+            "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n',
+        },
+    )
     provision_sync(tmp_path, blueprint="rag-agent", no_llm=True)
     schema_dir = tmp_path / ".harness" / "memory_schemas"
     assert schema_dir.is_dir()
@@ -106,7 +124,13 @@ def test_pruned_mcps_keeps_postgres_when_sqlalchemy_present(tmp_path: Path) -> N
 def test_pruned_mcps_dedupes_filesystem(tmp_path: Path) -> None:
     """v0.2 had ``filesystem`` appearing twice in AGENTS.md because
     profile.recommended_mcps + blueprint.recommended_mcps wasn't deduped."""
-    _seed(tmp_path, {"README.md": "# x", "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n'})
+    _seed(
+        tmp_path,
+        {
+            "README.md": "# x",
+            "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n',
+        },
+    )
     report = inspect_repo(tmp_path)
     profile = profile_from_inspection_template(report)
     bp = load_blueprint("finance-agent")
@@ -116,13 +140,21 @@ def test_pruned_mcps_dedupes_filesystem(tmp_path: Path) -> None:
 
 def test_rendered_agents_md_has_no_duplicate_mcps(tmp_path: Path) -> None:
     """End-to-end: after provision, AGENTS.md doesn't list any MCP twice."""
-    _seed(tmp_path, {"README.md": "# stockbot", "pyproject.toml": '[project]\nname = "stockbot"\nversion = "0.1"\ndependencies = ["yfinance"]\n'})
+    _seed(
+        tmp_path,
+        {
+            "README.md": "# stockbot",
+            "pyproject.toml": '[project]\nname = "stockbot"\nversion = "0.1"\ndependencies = ["yfinance"]\n',
+        },
+    )
     provision_sync(tmp_path, blueprint="finance-agent", no_llm=True)
     text = (tmp_path / "AGENTS.md").read_text()
     # Find the MCP block
     if "## Recommended MCP servers" in text:
         mcp_block = text.split("## Recommended MCP servers", 1)[1].split("##", 1)[0]
-        entries = [line.strip() for line in mcp_block.splitlines() if line.strip().startswith("- `")]
+        entries = [
+            line.strip() for line in mcp_block.splitlines() if line.strip().startswith("- `")
+        ]
         assert len(entries) == len(set(entries)), f"AGENTS.md has duplicate MCP entries: {entries}"
 
 
@@ -132,7 +164,13 @@ def test_rendered_agents_md_has_no_duplicate_mcps(tmp_path: Path) -> None:
 def test_forbidden_commands_omits_kubectl_for_personal_cli(tmp_path: Path) -> None:
     """The v0.2 re-eval flagged: 'kubectl --context=prod*' in a personal
     portfolio CLI is template bloat that dilutes the parts that matter."""
-    _seed(tmp_path, {"README.md": "# stockbot\nPortfolio tracker.", "pyproject.toml": '[project]\nname = "stockbot"\nversion = "0.1"\ndependencies = ["yfinance"]\n'})
+    _seed(
+        tmp_path,
+        {
+            "README.md": "# stockbot\nPortfolio tracker.",
+            "pyproject.toml": '[project]\nname = "stockbot"\nversion = "0.1"\ndependencies = ["yfinance"]\n',
+        },
+    )
     report = inspect_repo(tmp_path)
     profile = profile_from_inspection_template(report)
     joined = " ".join(profile.forbidden_commands)
@@ -142,7 +180,13 @@ def test_forbidden_commands_omits_kubectl_for_personal_cli(tmp_path: Path) -> No
 
 
 def test_forbidden_commands_includes_kubectl_when_kubernetes_present(tmp_path: Path) -> None:
-    _seed(tmp_path, {"README.md": "# infra\nk8s cluster manager.", "k8s/deployment.yaml": "kind: Deployment\napiVersion: apps/v1\n"})
+    _seed(
+        tmp_path,
+        {
+            "README.md": "# infra\nk8s cluster manager.",
+            "k8s/deployment.yaml": "kind: Deployment\napiVersion: apps/v1\n",
+        },
+    )
     report = inspect_repo(tmp_path)
     profile = profile_from_inspection_template(report)
     joined = " ".join(profile.forbidden_commands)
@@ -150,7 +194,13 @@ def test_forbidden_commands_includes_kubectl_when_kubernetes_present(tmp_path: P
 
 
 def test_forbidden_commands_includes_drop_database_when_db_deps(tmp_path: Path) -> None:
-    _seed(tmp_path, {"README.md": "# api", "pyproject.toml": '[project]\nname = "api"\nversion = "0.1"\ndependencies = ["sqlalchemy"]\n'})
+    _seed(
+        tmp_path,
+        {
+            "README.md": "# api",
+            "pyproject.toml": '[project]\nname = "api"\nversion = "0.1"\ndependencies = ["sqlalchemy"]\n',
+        },
+    )
     report = inspect_repo(tmp_path)
     profile = profile_from_inspection_template(report)
     joined = " ".join(profile.forbidden_commands)
@@ -159,7 +209,13 @@ def test_forbidden_commands_includes_drop_database_when_db_deps(tmp_path: Path) 
 
 def test_forbidden_commands_always_includes_destructive_universals(tmp_path: Path) -> None:
     """Universal destructive commands (rm -rf, git push --force) always present."""
-    _seed(tmp_path, {"README.md": "# x", "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n'})
+    _seed(
+        tmp_path,
+        {
+            "README.md": "# x",
+            "pyproject.toml": '[project]\nname = "x"\nversion = "0.1"\ndependencies = []\n',
+        },
+    )
     report = inspect_repo(tmp_path)
     profile = profile_from_inspection_template(report)
     joined = " ".join(profile.forbidden_commands)

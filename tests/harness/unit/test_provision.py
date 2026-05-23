@@ -20,7 +20,14 @@ def test_provision_writes_full_tree(tmp_repo: Path, blueprint: str) -> None:
     provision_sync(tmp_repo, blueprint=blueprint, no_llm=True)
 
     # All standard files exist
-    for rel in ("AGENTS.md", "SOUL.md", "TOOLS.md", "MEMORY.md", CONFIG_FILENAME, MANIFEST_FILENAME):
+    for rel in (
+        "AGENTS.md",
+        "SOUL.md",
+        "TOOLS.md",
+        "MEMORY.md",
+        CONFIG_FILENAME,
+        MANIFEST_FILENAME,
+    ):
         assert (tmp_repo / rel).exists(), f"{rel} not written for {blueprint}"
 
     # harness.config.json reflects the chosen blueprint
@@ -83,13 +90,14 @@ def test_provision_force_overwrites_user_files(tmp_repo: Path) -> None:
     (tmp_repo / "AGENTS.md").write_text("# Hand-written by the user\n")
     provision_sync(tmp_repo, blueprint="rag-agent", no_llm=True, force=True)
     assert "Hand-written" not in (tmp_repo / "AGENTS.md").read_text()
-    assert "RAG" in (tmp_repo / "AGENTS.md").read_text() or "retrieved" in (tmp_repo / "AGENTS.md").read_text()
+    assert (
+        "RAG" in (tmp_repo / "AGENTS.md").read_text()
+        or "retrieved" in (tmp_repo / "AGENTS.md").read_text()
+    )
 
 
 def test_provision_filters_adapters(tmp_repo: Path) -> None:
-    provision_sync(
-        tmp_repo, blueprint="workflow-agent", no_llm=True, adapters=["claude-code"]
-    )
+    provision_sync(tmp_repo, blueprint="workflow-agent", no_llm=True, adapters=["claude-code"])
     cfg = HarnessConfig.load(tmp_repo / CONFIG_FILENAME)
     assert cfg.adapters == ["claude-code"]
     assert (tmp_repo / ".claude" / "CLAUDE.md").exists()

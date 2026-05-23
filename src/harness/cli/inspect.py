@@ -54,9 +54,7 @@ def run(
     )
     t.add_row(
         "[dim]container[/dim]",
-        ", ".join(
-            k for k, v in data["containerization"].items() if v
-        ) or "—",
+        ", ".join(k for k, v in data["containerization"].items() if v) or "—",
     )
     t.add_row(
         "[dim]git[/dim]",

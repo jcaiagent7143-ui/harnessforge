@@ -38,15 +38,18 @@ class Manifest:
     entries: list[ManifestEntry] = field(default_factory=list)
 
     def to_json(self) -> str:
-        return json.dumps(
-            {
-                "schema_version": self.schema_version,
-                "harness_version": self.harness_version,
-                "entries": [asdict(e) for e in self.entries],
-            },
-            indent=2,
-            sort_keys=False,
-        ) + "\n"
+        return (
+            json.dumps(
+                {
+                    "schema_version": self.schema_version,
+                    "harness_version": self.harness_version,
+                    "entries": [asdict(e) for e in self.entries],
+                },
+                indent=2,
+                sort_keys=False,
+            )
+            + "\n"
+        )
 
     @classmethod
     def load(cls, path: str | Path) -> Manifest:

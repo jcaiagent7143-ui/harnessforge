@@ -211,8 +211,7 @@ def _filter_adapters(names: list[str] | None) -> list[tuple[str, Any, list[str]]
     out = [a for a in ALL_ADAPTERS if a[0] in wanted]
     if not out:
         raise ValueError(
-            f"No adapters matched {sorted(wanted)}. "
-            f"Available: {[a[0] for a in ALL_ADAPTERS]}"
+            f"No adapters matched {sorted(wanted)}. Available: {[a[0] for a in ALL_ADAPTERS]}"
         )
     return out
 
@@ -287,9 +286,7 @@ def _load_blueprint_outputs(
     return bp.name, bp.version, files, skills, memory_schemas
 
 
-def _execute(
-    plan: RenderPlan, *, force: bool
-) -> tuple[list[Path], list[Path], list[str]]:
+def _execute(plan: RenderPlan, *, force: bool) -> tuple[list[Path], list[Path], list[str]]:
     """Write every planned file. Respect manifest-based collision policy.
 
     Internal dedupe rule: when two PlannedFiles target the same path, the

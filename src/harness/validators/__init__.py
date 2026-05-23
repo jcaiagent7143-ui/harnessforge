@@ -100,9 +100,7 @@ def _run_one(validators_dir: Path, module_name: str, target: Path) -> list[str]:
         raise FileNotFoundError(f"validator module {module_name!r} not found at {src}")
 
     # Use importlib spec so we don't pollute sys.modules permanently.
-    spec = importlib.util.spec_from_file_location(
-        f"_harness_validator_{module_name}", str(src)
-    )
+    spec = importlib.util.spec_from_file_location(f"_harness_validator_{module_name}", str(src))
     if spec is None or spec.loader is None:
         raise ImportError(f"could not load spec for {src}")
     mod = importlib.util.module_from_spec(spec)

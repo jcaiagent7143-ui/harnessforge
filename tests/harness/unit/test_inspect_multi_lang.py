@@ -44,11 +44,7 @@ def test_inspect_detects_docker_compose(tmp_path: Path) -> None:
 
 def test_inspect_env_vars_from_dotenv_example(tmp_path: Path) -> None:
     (tmp_path / ".env.example").write_text(
-        "# comment line\n"
-        "DATABASE_URL=postgres://x\n"
-        "API_KEY=changeme\n"
-        "\n"
-        "SECRET_KEY=changeme\n"
+        "# comment line\nDATABASE_URL=postgres://x\nAPI_KEY=changeme\n\nSECRET_KEY=changeme\n"
     )
     report = inspect_repo(tmp_path)
     assert "DATABASE_URL" in report.env_vars

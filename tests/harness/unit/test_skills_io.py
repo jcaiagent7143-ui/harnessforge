@@ -66,9 +66,7 @@ def test_list_skills_finds_all(tmp_path: Path) -> None:
     for name in ("alpha-skill", "beta-skill", "gamma-skill"):
         skill_dir = tmp_path / name
         skill_dir.mkdir()
-        (skill_dir / "SKILL.md").write_text(
-            SAMPLE_SKILL.replace("my-skill", name)
-        )
+        (skill_dir / "SKILL.md").write_text(SAMPLE_SKILL.replace("my-skill", name))
     skills = list_skills(tmp_path)
     assert sorted(s.name for s in skills) == ["alpha-skill", "beta-skill", "gamma-skill"]
 

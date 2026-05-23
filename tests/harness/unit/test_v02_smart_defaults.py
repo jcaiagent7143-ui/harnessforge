@@ -209,9 +209,7 @@ def test_requires_approval_mentions_env_when_env_file_present(tmp_path: Path) ->
         ([], "python-cli-app"),  # generic Python defaults to build-mode
     ],
 )
-def test_recommender_routes_by_dep_signal(
-    tmp_path: Path, deps: list[str], expected: str
-) -> None:
+def test_recommender_routes_by_dep_signal(tmp_path: Path, deps: list[str], expected: str) -> None:
     deps_str = ", ".join(f'"{d}"' for d in deps)
     _seed(
         tmp_path,

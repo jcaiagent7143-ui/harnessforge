@@ -51,10 +51,7 @@ SKIP_DIRS = {".git", ".venv", "venv", "__pycache__", "node_modules", ".harness",
 
 def run(target: Path) -> list[str]:
     failures: list[str] = []
-    py_files = [
-        p for p in target.rglob("*.py")
-        if not any(seg in SKIP_DIRS for seg in p.parts)
-    ]
+    py_files = [p for p in target.rglob("*.py") if not any(seg in SKIP_DIRS for seg in p.parts)]
 
     if not py_files:
         return ["SKIPPED: no .py files to scan yet"]

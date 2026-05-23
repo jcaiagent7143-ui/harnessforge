@@ -48,9 +48,7 @@ def tmp_node_repo(tmp_path: Path) -> Path:
 @pytest.fixture
 def tmp_django_repo(tmp_path: Path) -> Path:
     """A Django-shaped repo."""
-    (tmp_path / "README.md").write_text(
-        "# helpdesk\n\nDjango app for customer support tickets.\n"
-    )
+    (tmp_path / "README.md").write_text("# helpdesk\n\nDjango app for customer support tickets.\n")
     (tmp_path / "pyproject.toml").write_text(
         '[project]\nname = "helpdesk"\nversion = "0.1.0"\n'
         'dependencies = ["django", "pytest", "ruff"]\n'

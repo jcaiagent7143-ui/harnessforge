@@ -84,15 +84,30 @@ def test_llm_profiler_falls_back_on_garbage(tmp_repo: Path) -> None:
 
 
 def test_llm_profiler_strips_markdown_fence(tmp_repo: Path) -> None:
-    payload = {"name": "fenced", "description": "x", "project_type": "library",
-               "primary_language": "python", "frameworks": [],
-               "test_command": None, "lint_command": None, "build_command": None,
-               "dev_command": None, "forbidden_paths": [], "forbidden_commands": [],
-               "requires_human_approval": [], "required_env_vars": [],
-               "secrets_handling": "x", "conventions": [], "success_criteria": [],
-               "recommended_mcps": [], "repo_tools": [],
-               "default_model": "x", "cost_ceiling_usd_per_task": 0.5, "max_steps": 12,
-               "harness_version": "0.1.0"}
+    payload = {
+        "name": "fenced",
+        "description": "x",
+        "project_type": "library",
+        "primary_language": "python",
+        "frameworks": [],
+        "test_command": None,
+        "lint_command": None,
+        "build_command": None,
+        "dev_command": None,
+        "forbidden_paths": [],
+        "forbidden_commands": [],
+        "requires_human_approval": [],
+        "required_env_vars": [],
+        "secrets_handling": "x",
+        "conventions": [],
+        "success_criteria": [],
+        "recommended_mcps": [],
+        "repo_tools": [],
+        "default_model": "x",
+        "cost_ceiling_usd_per_task": 0.5,
+        "max_steps": 12,
+        "harness_version": "0.1.0",
+    }
 
     class _Fenced:
         name = "fenced-provider"

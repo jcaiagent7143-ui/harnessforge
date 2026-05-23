@@ -117,8 +117,7 @@ async def _handle_skills_list(args: dict[str, Any]) -> str:
     return json.dumps(
         {
             "local": [
-                {"name": s.name, "version": s.version, "description": s.description}
-                for s in local
+                {"name": s.name, "version": s.version, "description": s.description} for s in local
             ],
             "catalog": catalog,
         },
@@ -133,9 +132,7 @@ async def _handle_verify(args: dict[str, Any]) -> str:
     root = _path(args)
     cfg_path = root / CONFIG_FILENAME
     if not cfg_path.exists():
-        return json.dumps(
-            {"error": f"no {CONFIG_FILENAME} at {root} — run `harness init` first"}
-        )
+        return json.dumps({"error": f"no {CONFIG_FILENAME} at {root} — run `harness init` first"})
     cfg = HarnessConfig.load(cfg_path)
     bp = load_blueprint(cfg.blueprint)
     report = run_checks(bp, root, only=args.get("check"), fail_fast=bool(args.get("fail_fast")))
@@ -233,9 +230,7 @@ async def _serve_stdio() -> None:
 
     server = _build_server()
     async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream, write_stream, server.create_initialization_options()
-        )
+        await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
 def run_stdio() -> None:

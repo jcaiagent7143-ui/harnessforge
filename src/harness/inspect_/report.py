@@ -338,10 +338,10 @@ def _detect_containerization(report: InspectionReport) -> None:
         "compose.yml",
         "compose.yaml",
     )
-    report.has_kubernetes = (
-        _has(report, "k8s", "kubernetes")
-        or any(p.suffix in (".yaml", ".yml") and "kind:" in p.read_text(errors="ignore")[:200]
-               for p in report.root.rglob("*.y*ml") if p.is_file() and p.stat().st_size < 10_000)
+    report.has_kubernetes = _has(report, "k8s", "kubernetes") or any(
+        p.suffix in (".yaml", ".yml") and "kind:" in p.read_text(errors="ignore")[:200]
+        for p in report.root.rglob("*.y*ml")
+        if p.is_file() and p.stat().st_size < 10_000
     )
 
 

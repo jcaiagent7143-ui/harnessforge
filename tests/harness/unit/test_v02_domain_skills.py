@@ -27,12 +27,20 @@ def test_domain_skill_coexists_with_blueprint_skills(tmp_path: Path) -> None:
     """SKILLS/<blueprint-skill>/ + SKILLS/domain/<custom>/ should both surface."""
     # Blueprint-shipped skill (top-level)
     write_skill(
-        Skill(name="decompose-task", description="Plan generator described here.", body="# X\n## Steps\n1. y"),
+        Skill(
+            name="decompose-task",
+            description="Plan generator described here.",
+            body="# X\n## Steps\n1. y",
+        ),
         tmp_path / "SKILLS" / "decompose-task",
     )
     # Domain skill (nested under SKILLS/domain/)
     write_skill(
-        Skill(name="my-custom-thing", description="Project-specific procedure description.", body="# Y\n## Steps\n1. z"),
+        Skill(
+            name="my-custom-thing",
+            description="Project-specific procedure description.",
+            body="# Y\n## Steps\n1. z",
+        ),
         tmp_path / "SKILLS" / "domain" / "my-custom-thing",
     )
 

@@ -44,17 +44,12 @@ def run(
     manifest_path = root / MANIFEST_FILENAME
 
     if not cfg_path.exists():
-        console.print(
-            f"[red]No {CONFIG_FILENAME} found at {root}.[/red] "
-            "Run `harness init` first."
-        )
+        console.print(f"[red]No {CONFIG_FILENAME} found at {root}.[/red] Run `harness init` first.")
         raise typer.Exit(code=2)
 
     if check:
         if not manifest_path.exists():
-            console.print(
-                f"[yellow]No {MANIFEST_FILENAME} found — cannot detect drift.[/yellow]"
-            )
+            console.print(f"[yellow]No {MANIFEST_FILENAME} found — cannot detect drift.[/yellow]")
             raise typer.Exit(code=2)
         manifest = Manifest.load(manifest_path)
         drifted = detect_drift(root, manifest)

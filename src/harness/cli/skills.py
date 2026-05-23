@@ -73,7 +73,9 @@ def show_cmd(
 
 @app.command("add")
 def add_cmd(
-    name: str = typer.Argument(..., help="Skill name from the blueprint catalog OR new name for --domain."),
+    name: str = typer.Argument(
+        ..., help="Skill name from the blueprint catalog OR new name for --domain."
+    ),
     path: Path = typer.Argument(Path("."), help="Repo to add into. Defaults to CWD."),
     domain: bool = typer.Option(
         False,

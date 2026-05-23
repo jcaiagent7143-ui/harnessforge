@@ -349,7 +349,9 @@ def _default_forbidden_commands(report: InspectionReport) -> list[str]:
 
     if report.has_kubernetes or "kubectl" in text or "k8s" in text:
         cmds.append("kubectl * --context=prod*")
-    if "terraform" in text or any(p.name in {"main.tf", "providers.tf"} for p in report.root.iterdir() if p.is_file()):
+    if "terraform" in text or any(
+        p.name in {"main.tf", "providers.tf"} for p in report.root.iterdir() if p.is_file()
+    ):
         cmds.append("terraform apply")
     if any(s in dep_text for s in ("postgres", "psycopg", "sqlalchemy", "mysql", "mariadb")):
         cmds += ["DROP DATABASE", "TRUNCATE"]
@@ -404,9 +406,7 @@ def _default_mcps_for(report: InspectionReport, project_type: str) -> list[str]:
     # Postgres only if deps mention it OR docker-compose includes it OR
     # a postgres URL is in env vars.
     dep_text = (
-        " ".join(report.frameworks)
-        + " ".join(report.notes)
-        + " ".join(report.env_vars)
+        " ".join(report.frameworks) + " ".join(report.notes) + " ".join(report.env_vars)
     ).lower()
     if any(s in dep_text for s in ("postgres", "psycopg", "sqlalchemy")) or (
         report.has_docker_compose and "postgres" in dep_text
@@ -414,7 +414,12 @@ def _default_mcps_for(report: InspectionReport, project_type: str) -> list[str]:
         base.append("postgres")
 
     # Fetch — useful for web-app / web-api or any project mentioning HTTP
-    if project_type in ("web-app", "web-api") or "fetch" in dep_text or "httpx" in dep_text or "requests" in dep_text:
+    if (
+        project_type in ("web-app", "web-api")
+        or "fetch" in dep_text
+        or "httpx" in dep_text
+        or "requests" in dep_text
+    ):
         base.append("fetch")
 
     # GitHub — useful for OSS libraries and CI-using projects
