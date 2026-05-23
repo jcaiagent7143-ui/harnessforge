@@ -23,32 +23,42 @@ uvx harnessforge init
 > **2026 is the year developers still build the harness.**
 > **2027 is the year the LLM builds its own harness.**
 
-Every time you open a new repo in Claude Code, Cursor, Codex, Gemini CLI,
-or Aider, you re-author the same layer by hand: a `CLAUDE.md` that explains
-the project, a `.cursor/rules` saying what's forbidden, a `SKILLS/` folder
-of named procedures, a list of MCP servers worth wiring up, a test command,
-a lint command, a "do not touch these paths" list. Different repo, same
-boilerplate. Different IDE, same boilerplate. Different agent, same
-boilerplate. The work is small per repo and ruinous in aggregate — every
-serious developer has typed some variant of "you are an X engineer working
-in a Y codebase, the conventions are Z" hundreds of times across hundreds
-of sessions.
+Today, every agent system still needs humans to manually prepare the
+environment: MCP servers, repo instructions, memory files, test commands,
+validation scripts, permission rules, browser credentials, and the
+task-loop scaffolding that holds the whole thing together. OpenAI's own
+definition of an agent — a system that plans, calls tools, collaborates,
+and keeps state across multi-step work — depends on every one of those
+layers being in place *before* the first plan step runs. MCP has emerged
+as the common connection layer for tools, data, and workflows. But
+*which* tools to connect, *what's* forbidden, *what counts as done* —
+those still get hand-authored, once per project, and then re-authored
+for the next.
 
-The honest reason this layer is still hand-authored in 2026 is small:
-the LLMs smart enough to do real coding work aren't quite reliable enough
-yet to *deterministically* generate their own ground-truth files from
-scratch on every fresh repo, with zero human in the loop, every time.
-By 2027 they will be. The harness layer disappears as a separate artifact —
-the agent reads the repo and primes itself, the way a senior engineer
-onboards in their first hour.
+In 2026, developers still spend too much time on this setup: MCP tools,
+repo rules, test commands, memory files, browser validation, credentials,
+workflow loops. By 2027, I don't think they will. The LLM will inspect
+the project, understand the task, generate the right harness, connect
+the right tools, create its own memory, write its own validation scripts,
+and keep refining the loop until the task is done. The harness layer
+disappears as a separately-authored artifact.
 
-**`harnessforge` is the bridge.** A deterministic repo walker plus an
-opinionated blueprint set, so the harness layer takes ~3 seconds in 2026
-instead of an hour. No API key required (`--no-llm` is fully deterministic),
-no runtime — your existing coding agent stays the brain. You commit the
-output once per repo and every coding agent you use shows up already
-knowing the codebase. When 2027's models can generate this layer on the
-fly themselves, harnessforge has done its job and ages out gracefully.
+**The next big open-source project won't be another coding agent. It
+will be the universal harness layer that every coding agent can use** —
+one simple framework that lets Claude, OpenAI, Gemini, local models, and
+future agents download a project, understand its environment, and call
+tools safely through a common interface. Model-neutral by design, because
+the model is the part that keeps changing.
+
+**`harnessforge` is the 2026 bridge.** A deterministic repo walker plus an
+opinionated blueprint set: in ~3 seconds, with no API key required
+(`--no-llm` is fully deterministic), it generates everything your coding
+agent needs to start fast — `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `MEMORY.md`,
+`SKILLS/`, per-IDE adapter files, blueprint validators, MCP recommendations,
+forbidden-path rules. You commit it once per repo and every coding agent
+you use shows up already knowing the codebase. When the next generation of
+models can build this layer on the fly themselves, harnessforge has done
+its job and ages out gracefully.
 
 ---
 
