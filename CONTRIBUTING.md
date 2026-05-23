@@ -11,12 +11,13 @@ cd harnessforge
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,proxy,mcp,openai]"
 pytest tests/harness         # 186+ tests; runs in ~4s
-ruff check src/harness tests/harness
+ruff check src/harness tests/harness   # linter
+ruff format --check .        # formatter (CI runs this too — easy to forget)
 mypy src/harness             # strict mode
 mkdocs build --strict        # docs (optional)
 ```
 
-If all four pass, you're set up.
+If all five pass, you're set up.
 
 The extras above pull in everything contributors need:
 
