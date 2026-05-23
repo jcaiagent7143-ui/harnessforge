@@ -51,14 +51,15 @@ tools safely through a common interface. Model-neutral by design, because
 the model is the part that keeps changing.
 
 **`harnessforge` is the 2026 bridge.** A deterministic repo walker plus an
-opinionated blueprint set: in ~3 seconds, with no API key required
-(`--no-llm` is fully deterministic), it generates everything your coding
-agent needs to start fast — `AGENTS.md`, `SOUL.md`, `TOOLS.md`, `MEMORY.md`,
-`SKILLS/`, per-IDE adapter files, blueprint validators, MCP recommendations,
-forbidden-path rules. You commit it once per repo and every coding agent
-you use shows up already knowing the codebase. When the next generation of
-models can build this layer on the fly themselves, harnessforge has done
-its job and ages out gracefully.
+opinionated blueprint set. In ~3 seconds, fully local with no network
+calls, it generates everything your coding agent needs to start fast —
+`AGENTS.md`, `SOUL.md`, `TOOLS.md`, `MEMORY.md`, `SKILLS/`, per-IDE
+adapter files, blueprint validators, MCP recommendations, forbidden-path
+rules. **Your coding agent stays the brain** — harnessforge just lays the
+ground truth it reads on startup. You commit the output once per repo and
+every coding agent you use shows up already knowing the codebase. When
+the next generation of models can build this layer on the fly themselves,
+harnessforge has done its job and ages out gracefully.
 
 ---
 
@@ -87,7 +88,7 @@ your-repo/
     └── memory_schemas/     ← JSON Schemas the blueprint expects
 ```
 
-These aren't placeholder stubs. Here's the first 25 lines of an `AGENTS.md` `harness init --no-llm` produced for a tiny stock-analysis repo:
+These aren't placeholder stubs. Here's the first 25 lines of an `AGENTS.md` `harnessforge init` produced for a tiny stock-analysis repo:
 
 ```markdown
 # AGENTS.md
@@ -135,20 +136,22 @@ harness init
 pip install harnessforge
 ```
 
-`--no-llm` makes init fully deterministic — no API key, ~2 seconds:
+Init is **fully deterministic by default** — no LLM call, no network, no
+API key, ~2 seconds. The optional MCP-server install lets your coding
+agent call `harnessforge verify` and `harnessforge inspect` as typed
+tools:
 
 ```bash
-uvx harnessforge init --no-llm
+pip install "harnessforge[mcp]"   # expose harnessforge itself as an MCP server
 ```
 
-Optional extras add an LLM-based refinement step (pulls dependency only if
-you want it):
-
-```bash
-pip install "harnessforge[anthropic]"   # use Claude to refine the profile
-pip install "harnessforge[openai]"      # use GPT
-pip install "harnessforge[mcp]"         # expose harness itself as an MCP server
-```
+> Older releases also shipped `[anthropic]` / `[openai]` / `[gemini]` extras
+> that called an LLM during `init` to "refine" the profile. They still work,
+> but we now recommend against them: if you want LLM-assisted refinement,
+> let your coding agent (Claude Code, Cursor, Codex, Gemini CLI, Aider) do
+> it after `init` — it has the full repo context and a chat loop, both of
+> which a one-shot init-time call doesn't. These extras are scheduled for
+> deprecation in 0.3.
 
 ---
 
@@ -272,7 +275,7 @@ Three end-to-end demos against real public repos, pinned to specific SHAs:
 | Airflow + Workflow | [apache/airflow](https://github.com/apache/airflow) | `workflow-agent` | [`examples/hero/airflow_workflow/run.sh`](examples/hero/airflow_workflow/run.sh) |
 
 Each `run.sh` shallow-clones the upstream repo at the pinned SHA, runs
-`harness init --no-llm`, and runs `harness verify` to confirm everything passes. CI runs all three on every push.
+`harnessforge init`, and runs `harnessforge verify` to confirm everything passes. CI runs all three on every push.
 
 ---
 
