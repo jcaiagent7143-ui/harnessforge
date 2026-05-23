@@ -18,6 +18,40 @@ uvx harnessforge init
 
 ---
 
+## Why this exists
+
+> **2026 is the year developers still build the harness.**
+> **2027 is the year the LLM builds its own harness.**
+
+Every time you open a new repo in Claude Code, Cursor, Codex, Gemini CLI,
+or Aider, you re-author the same layer by hand: a `CLAUDE.md` that explains
+the project, a `.cursor/rules` saying what's forbidden, a `SKILLS/` folder
+of named procedures, a list of MCP servers worth wiring up, a test command,
+a lint command, a "do not touch these paths" list. Different repo, same
+boilerplate. Different IDE, same boilerplate. Different agent, same
+boilerplate. The work is small per repo and ruinous in aggregate — every
+serious developer has typed some variant of "you are an X engineer working
+in a Y codebase, the conventions are Z" hundreds of times across hundreds
+of sessions.
+
+The honest reason this layer is still hand-authored in 2026 is small:
+the LLMs smart enough to do real coding work aren't quite reliable enough
+yet to *deterministically* generate their own ground-truth files from
+scratch on every fresh repo, with zero human in the loop, every time.
+By 2027 they will be. The harness layer disappears as a separate artifact —
+the agent reads the repo and primes itself, the way a senior engineer
+onboards in their first hour.
+
+**`harnessforge` is the bridge.** A deterministic repo walker plus an
+opinionated blueprint set, so the harness layer takes ~3 seconds in 2026
+instead of an hour. No API key required (`--no-llm` is fully deterministic),
+no runtime — your existing coding agent stays the brain. You commit the
+output once per repo and every coding agent you use shows up already
+knowing the codebase. When 2027's models can generate this layer on the
+fly themselves, harnessforge has done its job and ages out gracefully.
+
+---
+
 ## What you get
 
 Run `harness init` in your repo. ~3 seconds later, you have:
@@ -105,24 +139,6 @@ pip install "harnessforge[anthropic]"   # use Claude to refine the profile
 pip install "harnessforge[openai]"      # use GPT
 pip install "harnessforge[mcp]"         # expose harness itself as an MCP server
 ```
-
----
-
-## Why this exists
-
-Every time a developer opens a new repo in Claude Code (or Cursor, Codex,
-Gemini CLI, Aider), they re-explain the project: what kind of code is
-this, what conventions, what's forbidden, what does done look like.
-Different IDE, same boilerplate. And every file is project-specific —
-you can't just copy yesterday's `CLAUDE.md`.
-
-The fix is small: a deterministic walker that inspects the repo, picks a
-sensible **agent blueprint** based on the deps + structure, and emits the
-ground-truth files every major coding agent reads on startup. Run it once
-per repo, commit the output, every agent you use shows up smarter.
-
-That's what `harness init` is. The thing it generates is the harness; the
-CLI is a 60-second way to author one.
 
 ---
 
