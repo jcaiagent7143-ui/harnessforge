@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harness-kit/python-cli-app/conversation",
+  "$id": "harnessforge/python-cli-app/conversation",
   "title": "Python CLI app conversation memory",
   "type": "object",
   "required": ["messages"],

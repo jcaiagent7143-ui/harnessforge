@@ -24,13 +24,13 @@ def run() -> None:
 
         {
           "mcpServers": {
-            "harness": {"command": "uvx", "args": ["harness-kit", "mcp"]}
+            "harness": {"command": "uvx", "args": ["harnessforge", "mcp"]}
           }
         }
     """
     try:
         from harness.mcp.server import run_stdio
     except ImportError as e:
-        console.print(r"[red]Install MCP extras: pip install 'harness-kit\[mcp]'[/red]")
+        console.print(r"[red]Install MCP extras: pip install 'harnessforge\[mcp]'[/red]")
         raise typer.Exit(code=2) from e
     run_stdio()

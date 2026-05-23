@@ -3,25 +3,25 @@ requires = ["hatchling>=1.21"]
 build-backend = "hatchling.build"
 
 [project]
-# Harness Kit — the universal harness layer for AI coding agents.
+# harnessforge — the universal harness layer for AI coding agents.
 # One command bootstraps a project so Claude Code, Cursor, Codex,
 # Gemini CLI, Aider, OpenHarness, and any other coding agent can
 # work in it productively.
 #
-#   pipx install harness-kit && harness init
+#   pipx install harnessforge && harness init
 #   # or, no install:
-#   uvx harness-kit init
+#   uvx harnessforge init
 #
 # The `aegis` Python module ships in the same wheel as the internal
 # LLM I/O + sandbox + cache layer that `harness verify` uses.
-name = "harness-kit"
+name = "harnessforge"
 version = "0.2.1"
 description = "Universal harness layer for AI coding agents — one command sets up your repo for any agent (Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness)."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.11"
 authors = [
-  { name = "The Harness Kit Contributors" },
+  { name = "The harnessforge Contributors" },
 ]
 keywords = [
   "ai", "agent", "llm", "claude", "openai", "harness",
@@ -47,7 +47,7 @@ dependencies = [
   "anyio>=4.3",
   # harness.profile / .skills_io / .blueprints.loader / .catalog / .cli.inspect
   # all import yaml. Was implicit via dev extras — caught by v0.2.1 fresh-venv
-  # smoke test (broke every `pip install harness-kit` install).
+  # smoke test (broke every `pip install harnessforge` install).
   "PyYAML>=6.0",
 ]
 
@@ -91,17 +91,20 @@ docs = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/jcaiagent7143-ui/harness-kit"
-Documentation = "https://jcaiagent7143-ui.github.io/harness-kit"
-Repository = "https://github.com/jcaiagent7143-ui/harness-kit"
-Issues = "https://github.com/jcaiagent7143-ui/harness-kit/issues"
-Changelog = "https://github.com/jcaiagent7143-ui/harness-kit/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/jcaiagent7143-ui/harnessforge"
+Documentation = "https://jcaiagent7143-ui.github.io/harnessforge"
+Repository = "https://github.com/jcaiagent7143-ui/harnessforge"
+Issues = "https://github.com/jcaiagent7143-ui/harnessforge/issues"
+Changelog = "https://github.com/jcaiagent7143-ui/harnessforge/blob/main/CHANGELOG.md"
 
 [project.scripts]
-# Primary CLI — what we advertise.
+# Primary CLI — matches the PyPI distribution name so `uvx harnessforge init` works
+# without `--from`. Same entry point as the short `harness` alias below.
+harnessforge = "harness.cli.__main__:main"
+# Short alias — easier to type in a shell session; same entry point.
 harness = "harness.cli.__main__:main"
 # Back-compat: aegis remains importable + runnable, but the headline
-# project is now harness-kit. Marked legacy in `aegis --help`.
+# project is now harnessforge. Marked legacy in `aegis --help`.
 aegis = "aegis.cli.__main__:app"
 
 [tool.hatch.build.targets.wheel]

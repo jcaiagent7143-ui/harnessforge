@@ -1,6 +1,6 @@
 # Profile vs. blueprint
 
-Two core abstractions sit at the heart of Harness Kit.
+Two core abstractions sit at the heart of harnessforge.
 
 ## Profile
 
@@ -41,7 +41,7 @@ Each blueprint ships:
 - Memory JSON Schemas under `memory_schemas/`
 - An eval question set under `eval/`
 
-Blueprints are bundled with Harness Kit; you don't author them per-project. Authors *can* write custom blueprints — see [Authoring a custom blueprint](../guides/custom-blueprint.md).
+Blueprints are bundled with harnessforge; you don't author them per-project. Authors *can* write custom blueprints — see [Authoring a custom blueprint](../guides/custom-blueprint.md).
 
 ## How they combine
 

@@ -10,7 +10,7 @@ git clone https://github.com/zulip/zulip.git
 cd zulip
 git checkout <pinned-SHA>
 
-uvx harness-kit init --no-llm --blueprint support-agent
+uvx harnessforge init --no-llm --blueprint support-agent
 ```
 
 ## What gets written

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harness-kit/finance-agent/conversation",
+  "$id": "harnessforge/finance-agent/conversation",
   "title": "Finance analyst conversation memory",
   "type": "object",
   "required": ["messages"],

@@ -1,6 +1,6 @@
 # The aegis 5-stage pipeline (internal)
 
-`aegis` was the original headline project (PyPI: `self-harness ≤ 0.5.4`). It now serves as an **internal** dependency of `harness-kit`, providing:
+`aegis` was the original headline project (PyPI: `self-harness ≤ 0.5.4`). It now serves as an **internal** dependency of `harnessforge`, providing:
 
 - **Provider abstraction** — `aegis.providers.auto_provider()` for Anthropic / OpenAI / Gemini / Ollama / LiteLLM / Mock
 - **Sandbox** — `aegis.synthesize.sandbox` (AST allowlist + restricted exec + SIGALRM/RLIMIT) for running blueprint validators safely
@@ -14,4 +14,4 @@ The 5-stage pipeline (analyze → assess → synthesize → execute → verify) 
 - You want to call the Aegis sandbox from your own code: `from aegis.synthesize.sandbox import load_harness`
 - You want to use Aegis's provider auto-detection in your own tooling: `from aegis.providers import auto_provider`
 
-See the `src/aegis/` source for the full API. It will continue to be maintained as long as harness-kit depends on it.
+See the `src/aegis/` source for the full API. It will continue to be maintained as long as harnessforge depends on it.

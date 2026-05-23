@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harness-kit/workflow-agent/conversation",
+  "$id": "harnessforge/workflow-agent/conversation",
   "title": "Workflow conversation memory",
   "type": "object",
   "required": ["run_id", "task", "plan", "tool_log"],

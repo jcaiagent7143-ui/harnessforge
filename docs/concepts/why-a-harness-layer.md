@@ -21,13 +21,13 @@ In 2026, developers still hand-author all of this per project per IDE.
 
 By 2027, the coding LLM should generate it. Claude Code, Codex, Gemini CLI, Cursor — they should ask "what type of agent am I building? what modules do I need? what tools should I connect? what files should I create? what memory structure? what validation tests?" — and a shared layer should answer.
 
-**Harness Kit is that bridge.** One command, run today, gives any coding agent the harness it would otherwise spend hours building. Then it gets out of the way.
+**harnessforge is that bridge.** One command, run today, gives any coding agent the harness it would otherwise spend hours building. Then it gets out of the way.
 
 The coding LLM still writes the code. The coding LLM still makes the decisions. The coding LLM still drives the loop. But it no longer starts from zero.
 
 ## What we're explicitly NOT building
 
-- **Not another coding agent.** Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness — keep using whichever you already use. Harness Kit is what they read on startup.
+- **Not another coding agent.** Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness — keep using whichever you already use. harnessforge is what they read on startup.
 - **Not a guardrails-only library.** Guardrails are part of it but not the point.
 - **Not a runtime.** We don't run your agent. We generate files and exit. Your IDE keeps the loop.
 - **Not opinionated about the model.** Model-neutral by design. Any LLM works.

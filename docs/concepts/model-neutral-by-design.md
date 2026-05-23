@@ -1,16 +1,16 @@
 # Model-neutral by design
 
-Harness Kit doesn't care which LLM is the brain.
+harnessforge doesn't care which LLM is the brain.
 
 ## At provisioning time
 
 `harness init` builds a profile. By default it uses whatever LLM provider you have credentials for:
 
-- Anthropic (`ANTHROPIC_API_KEY` + `pip install 'harness-kit[anthropic]'`)
-- OpenAI (`OPENAI_API_KEY` + `pip install 'harness-kit[openai]'`)
-- Google Gemini (`GOOGLE_API_KEY` + `pip install 'harness-kit[gemini]'`)
-- Ollama (local; `pip install 'harness-kit[ollama]'`)
-- LiteLLM (100+ providers via `pip install 'harness-kit[litellm]'`)
+- Anthropic (`ANTHROPIC_API_KEY` + `pip install 'harnessforge[anthropic]'`)
+- OpenAI (`OPENAI_API_KEY` + `pip install 'harnessforge[openai]'`)
+- Google Gemini (`GOOGLE_API_KEY` + `pip install 'harnessforge[gemini]'`)
+- Ollama (local; `pip install 'harnessforge[ollama]'`)
+- LiteLLM (100+ providers via `pip install 'harnessforge[litellm]'`)
 
 If none is available, `harness init` falls back to the deterministic template profiler — no API key required. The output is still production-grade; the LLM only refines descriptions and conventions.
 

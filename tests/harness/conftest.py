@@ -1,4 +1,4 @@
-"""Shared fixtures + pytest options for harness-kit tests."""
+"""Shared fixtures + pytest options for harnessforge tests."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 def tmp_repo(tmp_path: Path) -> Path:
     """A minimal Python repo on disk — enough for inspect_repo to classify."""
     (tmp_path / "README.md").write_text(
-        "# Sample\n\nA minimal project used by harness-kit tests.\n"
+        "# Sample\n\nA minimal project used by harnessforge tests.\n"
     )
     (tmp_path / "pyproject.toml").write_text(
         '[project]\nname = "sample"\nversion = "0.1.0"\n'

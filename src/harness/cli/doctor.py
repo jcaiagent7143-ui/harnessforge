@@ -36,7 +36,7 @@ def run(
     path: Path = typer.Argument(Path("."), help="Repo to diagnose. Defaults to CWD."),
 ) -> None:
     """Print a diagnostic report for the current shell + repo."""
-    console.rule(f"[bold]harness doctor[/bold] · harness-kit {harness.__version__}")
+    console.rule(f"[bold]harness doctor[/bold] · harnessforge {harness.__version__}")
 
     # Providers
     t = Table(title="LLM providers")

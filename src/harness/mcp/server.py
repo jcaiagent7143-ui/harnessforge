@@ -1,4 +1,4 @@
-"""harness-kit MCP (stdio) server.
+"""harnessforge MCP (stdio) server.
 
 Exposes five tools to any MCP client (Claude Desktop, Claude Code,
 Cursor, Cline, Continue, Windsurf, ...). The same JSON contract as the

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harness-kit/finance-agent/signals",
+  "$id": "harnessforge/finance-agent/signals",
   "title": "Generated analytical signals",
   "type": "object",
   "required": ["generated_at", "signals"],

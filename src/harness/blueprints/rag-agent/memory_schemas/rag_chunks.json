@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harness-kit/rag-agent/rag-chunks",
+  "$id": "harnessforge/rag-agent/rag-chunks",
   "title": "RAG persistent chunk record",
   "type": "object",
   "required": ["chunk_id", "source", "text", "embedding"],

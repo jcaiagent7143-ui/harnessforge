@@ -1,6 +1,6 @@
 name: release
 
-# Triggered on a version tag (e.g. harness-kit-v0.2.1 OR v0.2.1) — builds
+# Triggered on a version tag (e.g. harnessforge-v0.2.1 OR v0.2.1) — builds
 # + publishes to PyPI using OIDC Trusted Publishing (no API token in
 # GitHub secrets).
 #
@@ -9,9 +9,9 @@ name: release
 #   1. Sign in at https://pypi.org/manage/account/publishing/
 #   2. Click "Add a new pending publisher"
 #   3. Fill in:
-#        PyPI project name: harness-kit
+#        PyPI project name: harnessforge
 #        Owner:              jcaiagent7143-ui
-#        Repository name:    harness-kit
+#        Repository name:    harnessforge
 #        Workflow name:      release.yml
 #        Environment name:   pypi
 #   4. Save.
@@ -23,8 +23,8 @@ name: release
 #
 # Then tag + push:
 #
-#   git tag harness-kit-v0.2.1
-#   git push origin harness-kit-v0.2.1
+#   git tag harnessforge-v0.2.1
+#   git push origin harnessforge-v0.2.1
 #
 # This workflow fires on tag push, builds sdist+wheel, uploads to PyPI
 # via OIDC, then creates a GitHub Release with the CHANGELOG section.
@@ -33,7 +33,7 @@ on:
   push:
     tags:
       - "v*"
-      - "harness-kit-v*"
+      - "harnessforge-v*"
   workflow_dispatch:
 
 permissions:
@@ -64,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/harness-kit/
+      url: https://pypi.org/project/harnessforge/
     permissions:
       id-token: write  # required for Trusted Publishing
     steps:
@@ -91,13 +91,13 @@ jobs:
         id: notes
         run: |
           tag="${GITHUB_REF_NAME}"
-          # Accept either v0.2.1 or harness-kit-v0.2.1
+          # Accept either v0.2.1 or harnessforge-v0.2.1
           version="${tag#v}"
-          version="${version#harness-kit-v}"
+          version="${version#harnessforge-v}"
           # Extract the section for this version from CHANGELOG.md.
-          # Header shape: "## [harness-kit X.Y.Z] — date — title"
+          # Header shape: "## [harnessforge X.Y.Z] — date — title"
           awk -v v="$version" '
-            $0 ~ "^## \\[harness-kit "v"\\]" { capture=1; next }
+            $0 ~ "^## \\[harnessforge "v"\\]" { capture=1; next }
             capture && /^## \[/ { exit }
             capture { print }
           ' CHANGELOG.md > release-notes.md

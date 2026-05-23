@@ -17,7 +17,7 @@ If a `path` argument is omitted, the server uses `$HARNESS_ROOT` env var, or the
 ## Install
 
 ```bash
-pipx install 'harness-kit[mcp]'
+pipx install 'harnessforge[mcp]'
 ```
 
 ## Wire it up
@@ -31,7 +31,7 @@ pipx install 'harness-kit[mcp]'
   "mcpServers": {
     "harness": {
       "command": "uvx",
-      "args": ["--from", "harness-kit[mcp]", "harness", "mcp"]
+      "args": ["--from", "harnessforge[mcp]", "harness", "mcp"]
     }
   }
 }

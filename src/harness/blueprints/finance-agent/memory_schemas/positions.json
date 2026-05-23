@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harness-kit/finance-agent/positions",
+  "$id": "harnessforge/finance-agent/positions",
   "title": "User's declared portfolio positions",
   "type": "object",
   "required": ["as_of", "positions"],

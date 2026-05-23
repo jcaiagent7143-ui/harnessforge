@@ -1,6 +1,6 @@
-# Harness Kit vs. Hermes / OpenClaw / OpenHarness
+# harnessforge vs. Hermes / OpenClaw / OpenHarness
 
-The agent-infrastructure space settled into three patterns by May 2026. Harness Kit picks a fourth lane that none of them occupies.
+The agent-infrastructure space settled into three patterns by May 2026. harnessforge picks a fourth lane that none of them occupies.
 
 ## The landscape
 
@@ -28,19 +28,19 @@ Library / framework. Primitives for building agents in code.
 
 **Use these if:** you're writing custom agent code from scratch and want a SDK with batteries.
 
-### Harness Kit
+### harnessforge
 
-**Provisioning harness.** One command — `uvx harness-kit init` — inspects your repo, picks a blueprint, generates `AGENTS.md` + `SOUL.md` + `TOOLS.md` + `MEMORY.md` + `SKILLS/` + validators + MCP config, then steps away. Your existing coding agent (Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness) reads the output.
+**Provisioning harness.** One command — `uvx harnessforge init` — inspects your repo, picks a blueprint, generates `AGENTS.md` + `SOUL.md` + `TOOLS.md` + `MEMORY.md` + `SKILLS/` + validators + MCP config, then steps away. Your existing coding agent (Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness) reads the output.
 
-**Use Harness Kit if:** you use Claude Code / Cursor / Codex / Gemini CLI / Aider / OpenHarness and want them to start a project with the right ground truth, blueprint, validators, and tools without hand-authoring any of it.
+**Use harnessforge if:** you use Claude Code / Cursor / Codex / Gemini CLI / Aider / OpenHarness and want them to start a project with the right ground truth, blueprint, validators, and tools without hand-authoring any of it.
 
 ## The key distinction vs. OpenHarness
 
-OpenHarness is a **runtime** harness — you pipe your agent through `oh` and it provides the loop. Harness Kit is a **provisioner** — we generate files into your repo and exit. Your agent never knows we exist; it just sees the right ground truth on startup.
+OpenHarness is a **runtime** harness — you pipe your agent through `oh` and it provides the loop. harnessforge is a **provisioner** — we generate files into your repo and exit. Your agent never knows we exist; it just sees the right ground truth on startup.
 
 Different lifecycle, different abstraction:
 
-| | OpenHarness | Harness Kit |
+| | OpenHarness | harnessforge |
 |---|---|---|
 | Owns the loop | Yes (`oh` CLI runs your agent) | No (your IDE keeps the loop) |
 | Lives in your shell | Yes (always-on `oh` process) | No (one-shot `harness init`) |
@@ -48,10 +48,10 @@ Different lifecycle, different abstraction:
 | Visible to your coding agent | Yes (the agent runs inside it) | No (the agent reads the generated files; we're invisible) |
 | Compatible with your existing setup | Replaces your loop | Augments your existing tool |
 
-Both are good tools for different jobs. Harness Kit doesn't compete with OpenHarness's runtime; it bootstraps a repo that *either* tool (or any other coding agent) can then use.
+Both are good tools for different jobs. harnessforge doesn't compete with OpenHarness's runtime; it bootstraps a repo that *either* tool (or any other coding agent) can then use.
 
 ## The positioning sentence
 
-If you use Hermes or OpenClaw, you don't need Harness Kit — those agents ship with their own harness.
+If you use Hermes or OpenClaw, you don't need harnessforge — those agents ship with their own harness.
 
 If you use Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness, or anything else, you do.

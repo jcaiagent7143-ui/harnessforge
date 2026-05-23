@@ -1,10 +1,10 @@
-# Harness Kit
+# harnessforge
 
 > _The universal harness layer for AI coding agents._
 > _One command turns any repo into a project where Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness, and any other coding agent can work productively._
 
 ```bash
-uvx harness-kit init
+uvx harnessforge init
 ```
 
 ## What you get

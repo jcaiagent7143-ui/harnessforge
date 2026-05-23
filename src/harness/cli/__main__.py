@@ -41,7 +41,7 @@ from harness.cli import (
 app = typer.Typer(
     name="harness",
     help=(
-        "Harness Kit — the universal harness layer for AI coding agents.\n\n"
+        "harnessforge — the universal harness layer for AI coding agents.\n\n"
         "One command sets up your repo so Claude Code, Cursor, Codex, "
         "Gemini CLI, Aider, OpenHarness, and any other coding agent can "
         "work in it productively."

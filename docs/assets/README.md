@@ -15,7 +15,7 @@ This writes `docs/assets/demo.gif` (~800KB, 30s, 1100×700). Commit it.
 
 The tape:
 - creates a bare Python repo at `/tmp/portfoliowatch/`
-- runs `uvx harness-kit init --no-llm`
+- runs `uvx harnessforge init --no-llm`
 - shows the generated tree (AGENTS.md, SOUL.md, TOOLS.md, MEMORY.md, SKILLS/)
 - prints the first 20 lines of `AGENTS.md` to show real, project-specific content
 - runs `harness verify --json` to show 3/3 validators passing

@@ -4,13 +4,13 @@
 
 ```bash
 # 1. Run init in your repo (no install needed)
-uvx harness-kit init --no-llm
+uvx harnessforge init --no-llm
 
 # 2. See what got written
 ls -A | grep -E '^(AGENTS|SOUL|TOOLS|MEMORY)\.md$|^SKILLS|^harness.config|^.harness'
 
 # 3. Verify
-uvx harness-kit verify --json
+uvx harnessforge verify --json
 ```
 
 ## What `init` does
@@ -25,16 +25,16 @@ uvx harness-kit verify --json
 ## Pick a specific blueprint
 
 ```bash
-uvx harness-kit init --blueprint rag-agent
-uvx harness-kit init --blueprint support-agent
-uvx harness-kit init --blueprint workflow-agent
+uvx harnessforge init --blueprint rag-agent
+uvx harnessforge init --blueprint support-agent
+uvx harnessforge init --blueprint workflow-agent
 ```
 
 ## Use a specific LLM as the profiler
 
 ```bash
 export ANTHROPIC_API_KEY=...
-pip install 'harness-kit[anthropic]'
+pip install 'harnessforge[anthropic]'
 harness init                           # uses Claude to refine the profile
 ```
 

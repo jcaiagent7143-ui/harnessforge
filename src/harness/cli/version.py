@@ -11,4 +11,4 @@ console = Console()
 
 def run() -> None:
     """Print the installed harness version."""
-    console.print(f"harness-kit {harness.__version__}")
+    console.print(f"harnessforge {harness.__version__}")

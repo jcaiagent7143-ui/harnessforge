@@ -10,7 +10,7 @@ git clone https://github.com/fastapi/full-stack-fastapi-template.git
 cd full-stack-fastapi-template
 git checkout <pinned-SHA>          # see examples/hero/fastapi_rag/run.sh
 
-uvx harness-kit init --no-llm --blueprint rag-agent
+uvx harnessforge init --no-llm --blueprint rag-agent
 ```
 
 ## What gets written

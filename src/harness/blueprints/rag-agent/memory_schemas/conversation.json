@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harness-kit/rag-agent/conversation",
+  "$id": "harnessforge/rag-agent/conversation",
   "title": "RAG conversation memory",
   "type": "object",
   "required": ["messages", "retrieved_chunks"],

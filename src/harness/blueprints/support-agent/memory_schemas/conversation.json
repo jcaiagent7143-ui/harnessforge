@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harness-kit/support-agent/conversation",
+  "$id": "harnessforge/support-agent/conversation",
   "title": "Support conversation memory",
   "type": "object",
   "required": ["conversation_id", "messages"],

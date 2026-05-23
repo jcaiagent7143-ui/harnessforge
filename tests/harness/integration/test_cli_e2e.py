@@ -38,7 +38,7 @@ def _run(*args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[str
 def test_cli_version_prints_version() -> None:
     r = _run("version")
     assert r.returncode == 0
-    assert "harness-kit" in r.stdout
+    assert "harnessforge" in r.stdout
 
 
 def test_cli_blueprint_list_includes_three(tmp_path: Path) -> None:
@@ -101,7 +101,7 @@ def test_cli_verify_no_config_exits_3(tmp_path: Path) -> None:
 def test_cli_doctor_runs(tmp_path: Path) -> None:
     r = _run("doctor", str(tmp_path))
     assert r.returncode == 0
-    assert "harness-kit" in r.stdout
+    assert "harnessforge" in r.stdout
 
 
 def test_cli_blueprint_show_prints_spec() -> None:

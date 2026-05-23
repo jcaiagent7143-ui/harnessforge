@@ -1,12 +1,12 @@
 # The five harness layers
 
-Hermes (Nous Research) named these layers in April 2026 and the framing has stuck. Every reviewer in the agent infrastructure space now uses it. Harness Kit maps to all five — but we *generate* the artifacts; the agent *runs* them.
+Hermes (Nous Research) named these layers in April 2026 and the framing has stuck. Every reviewer in the agent infrastructure space now uses it. harnessforge maps to all five — but we *generate* the artifacts; the agent *runs* them.
 
 ## Layer 1 — Instructions
 
 What the agent reads on startup to understand the project.
 
-**Harness Kit generates:**
+**harnessforge generates:**
 
 - `AGENTS.md` — universal entry, OpenAI Codex CLI convention
 - `SOUL.md` — personality + tone (Hermes / OpenClaw convention)
@@ -19,7 +19,7 @@ What the agent reads on startup to understand the project.
 
 Tool permissions, sandboxed execution, forbidden paths and commands.
 
-**Harness Kit generates:**
+**harnessforge generates:**
 
 - Profile-driven `forbidden_paths`, `forbidden_commands`, `requires_human_approval` lists rendered into every adapter file
 - Validators that run inside an AST-allowlist sandbox (via the internal `aegis` module)
@@ -28,7 +28,7 @@ Tool permissions, sandboxed execution, forbidden paths and commands.
 
 The validation + repair loop the agent uses to self-correct.
 
-**Harness Kit generates:**
+**harnessforge generates:**
 
 - `harness verify` — runs blueprint-defined validators (Pydantic schema checks, citation cross-checks, eval questions)
 - Stable JSON contract that your coding agent can read programmatically:
@@ -48,7 +48,7 @@ The validation + repair loop the agent uses to self-correct.
 
 Persistent + session knowledge structures the agent uses across turns.
 
-**Harness Kit generates:**
+**harnessforge generates:**
 
 - `MEMORY.md` — describes the memory model
 - JSON Schemas for the standard shapes — `conversation`, `rag-chunks`, `ticket-history`
@@ -58,7 +58,7 @@ Persistent + session knowledge structures the agent uses across turns.
 
 Multi-step plan + sub-agent delegation + scheduling.
 
-**Harness Kit generates (v0.1):**
+**harnessforge generates (v0.1):**
 
 - Patterns documented in `AGENTS.md`
 - Workflow blueprint's `decompose-task` skill that captures the plan structure

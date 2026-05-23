@@ -1,6 +1,6 @@
 # Authoring a custom skill
 
-A skill is a procedure your agent can call by name. Harness Kit follows the [`anthropics/skills`](https://github.com/anthropics/skills) format so any tool that reads that convention can use the same skill file.
+A skill is a procedure your agent can call by name. harnessforge follows the [`anthropics/skills`](https://github.com/anthropics/skills) format so any tool that reads that convention can use the same skill file.
 
 ## Format
 

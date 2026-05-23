@@ -19,7 +19,7 @@
 | Field | Type | Description |
 |---|---|---|
 | `schema_version` | int | Always 1 in v0.1. Bumped on breaking changes. |
-| `harness_version` | string | Version of harness-kit that wrote this file. |
+| `harness_version` | string | Version of harnessforge that wrote this file. |
 | `blueprint` | string | Blueprint name (`rag-agent`, etc.). |
 | `blueprint_version` | string | Blueprint version. |
 | `manifest` | string | Path to the file manifest (default `.harness/manifest.json`). |

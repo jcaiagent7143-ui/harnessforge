@@ -1,6 +1,6 @@
 # Bring your own coding agent
 
-Harness Kit generates files that every major coding agent already knows how to read. Zero per-IDE config required.
+harnessforge generates files that every major coding agent already knows how to read. Zero per-IDE config required.
 
 ## Claude Code
 
@@ -48,7 +48,7 @@ For typed tool access from any MCP client:
   "mcpServers": {
     "harness": {
       "command": "uvx",
-      "args": ["--from", "harness-kit[mcp]", "harness", "mcp"]
+      "args": ["--from", "harnessforge[mcp]", "harness", "mcp"]
     }
   }
 }

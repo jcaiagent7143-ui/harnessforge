@@ -1,4 +1,4 @@
-# Release checklist — harness-kit v0.2.1
+# Release checklist — harnessforge v0.2.1
 
 Everything below requires your accounts or your decisions. Steps in
 order — do not skip.
@@ -6,12 +6,12 @@ order — do not skip.
 ## 1. Reserve the GitHub repo (one command, your account)
 
 ```bash
-gh repo create harness-kit --public \
+gh repo create harnessforge --public \
   --description "Universal harness layer for AI coding agents — one command sets up your repo for Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness." \
-  --homepage "https://jcaiagent7143-ui.github.io/harness-kit"
+  --homepage "https://jcaiagent7143-ui.github.io/harnessforge"
 ```
 
-Output should include `https://github.com/jcaiagent7143-ui/harness-kit`.
+Output should include `https://github.com/jcaiagent7143-ui/harnessforge`.
 
 ## 2. Reserve the PyPI name (one command, your account)
 
@@ -20,7 +20,7 @@ successfully upload the first release. So this step actually happens at
 step 6. To pre-flight that the name is available, hit:
 
 ```bash
-curl -s -o /dev/null -w "%{http_code}\n" https://pypi.org/pypi/harness-kit/json
+curl -s -o /dev/null -w "%{http_code}\n" https://pypi.org/pypi/harnessforge/json
 # 404 = available  /  200 = taken
 ```
 
@@ -28,15 +28,15 @@ If 200, we rename. Tell me and I'll switch every reference to a free name.
 
 ## 3. Set up PyPI Trusted Publishing (one-time, in the PyPI web UI)
 
-`harness-kit` doesn't exist on PyPI yet, so use the **pending publisher**
+`harnessforge` doesn't exist on PyPI yet, so use the **pending publisher**
 flow (which works before the first upload):
 
 1. Sign in at `https://pypi.org/manage/account/publishing/`
 2. Scroll to "Add a new pending publisher"
 3. Fill in exactly:
-   - **PyPI project name**: `harness-kit`
+   - **PyPI project name**: `harnessforge`
    - **Owner**: `jcaiagent7143-ui`
-   - **Repository name**: `harness-kit`
+   - **Repository name**: `harnessforge`
    - **Workflow name**: `release.yml`
    - **Environment name**: `pypi`
 4. Click **Add**
@@ -53,16 +53,16 @@ From the repo root:
 
 ```bash
 # Add the existing remote for the new repo (keep aegis as a fork-of-history reference)
-git remote add harness-kit https://github.com/jcaiagent7143-ui/harness-kit.git
+git remote add harnessforge https://github.com/jcaiagent7143-ui/harnessforge.git
 
 # Stage everything we've changed this session
 git add -A
 
 # Commit — message below captures the v0.1 → v0.2 → v0.2.1 arc honestly
 git commit -m "$(cat <<'EOF'
-feat(harness-kit 0.2.1): real-build eval-driven release-ready
+feat(harnessforge 0.2.1): real-build eval-driven release-ready
 
-Rebrand self-harness → harness-kit, add 2 blueprints (python-cli-app +
+Rebrand self-harness → harnessforge, add 2 blueprints (python-cli-app +
 finance-agent), and ship 12 surgical fixes caught by two rounds of
 real-agent A/B evaluations (Claude Code building a stock-analysis agent
 WITH vs. WITHOUT the harness).
@@ -98,7 +98,7 @@ EOF
 )"
 
 # Push to the new repo as the primary remote
-git push -u harness-kit main
+git push -u harnessforge main
 ```
 
 If you'd rather keep the existing `aegis` repo as primary (and rename
@@ -123,15 +123,15 @@ git push
 Once steps 1-4 are done and the repo is green on GitHub:
 
 ```bash
-# Tag this commit (the workflow accepts both v* and harness-kit-v* shapes)
-git tag harness-kit-v0.2.1
-git push harness-kit harness-kit-v0.2.1
+# Tag this commit (the workflow accepts both v* and harnessforge-v* shapes)
+git tag harnessforge-v0.2.1
+git push harnessforge harnessforge-v0.2.1
 ```
 
 GitHub Actions:
 1. Builds sdist + wheel from the tagged commit
 2. Waits for environment approval (if you set Required reviewers in step 3)
-3. OIDC-uploads to PyPI as `harness-kit-0.2.1`
+3. OIDC-uploads to PyPI as `harnessforge-0.2.1`
 4. Creates a GitHub Release with the CHANGELOG section auto-extracted
 
 Watch the workflow live: `gh run watch`
@@ -140,8 +140,8 @@ Watch the workflow live: `gh run watch`
 
 ```bash
 # In a fresh shell on any machine:
-pip install harness-kit
-harness version          # should print: harness-kit 0.2.1
+pip install harnessforge
+harness version          # should print: harnessforge 0.2.1
 harness blueprint list   # should show 5 blueprints
 mkdir /tmp/postlaunch && cd /tmp/postlaunch
 echo "# x" > README.md && printf '[project]\nname = "x"\nversion = "0.1"\n' > pyproject.toml
@@ -170,8 +170,8 @@ Don't ship them until step 7 passes on a machine that isn't yours.
 
 ```bash
 # Delete the tag (locally + remote) and try again
-git tag -d harness-kit-v0.2.1
-git push harness-kit :refs/tags/harness-kit-v0.2.1
+git tag -d harnessforge-v0.2.1
+git push harnessforge :refs/tags/harnessforge-v0.2.1
 ```
 
 Then fix + push + retag.

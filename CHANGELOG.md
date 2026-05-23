@@ -1,11 +1,11 @@
 # Changelog
 
-All notable changes to Harness Kit (PyPI: `harness-kit`) and the legacy
+All notable changes to harnessforge (PyPI: `harnessforge`) and the legacy
 distribution (`self-harness`) are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [harness-kit 0.2.1] — 2026-05-23 — patch: 5 polish issues caught by the v0.2 re-eval
+## [harnessforge 0.2.1] — 2026-05-23 — patch: 5 polish issues caught by the v0.2 re-eval
 
 A second real-build A/B (Claude Code rebuilding the same stock-agent
 against v0.2's `finance-agent` blueprint) confirmed the v0.2 thesis —
@@ -60,7 +60,7 @@ surfaced 5 polish-level gaps; v0.2.1 patches every one.
 - **186 tests passing** (174 in v0.2 → +12 v0.2.1 regression tests).
 - All 7 golden-file snapshots updated for the new memory_schemas paths.
 
-## [harness-kit 0.2.0] — 2026-05-23 — closes every gap from the real-build eval
+## [harnessforge 0.2.0] — 2026-05-23 — closes every gap from the real-build eval
 
 A real-developer A/B build (Claude Code building a stock-analysis agent
 WITH harness vs. on a bare repo) surfaced 7 specific gaps in v0.1. v0.2
@@ -145,10 +145,10 @@ closes every one.
   truth for dep-family tagging — both the recommender and the MCP
   pruner read from `report.frameworks` + `report.notes`.
 
-## [harness-kit 0.1.0] — 2026-05-23 — first public release
+## [harnessforge 0.1.0] — 2026-05-23 — first public release
 
 **Project rename + new headline product.** What used to be `self-harness`
-(Aegis, the per-task synthesizing pipeline) is now `harness-kit` (the
+(Aegis, the per-task synthesizing pipeline) is now `harnessforge` (the
 universal harness layer for AI coding agents). `aegis` remains importable
 as an internal module — the sandbox + provider abstraction + cache layer
 that `harness verify` uses.
@@ -195,7 +195,7 @@ that `harness verify` uses.
 
 ### Changed
 
-- PyPI distribution renamed: `self-harness` → `harness-kit`.
+- PyPI distribution renamed: `self-harness` → `harnessforge`.
 - Primary console script: `harness` (was `aegis`).
 - `aegis` console script kept for back-compat; marked legacy in `--help`.
 - Both `src/harness/` and `src/aegis/` ship in the same wheel.
@@ -277,7 +277,7 @@ tests.
 
 CI cleanups + install-path cleanups. The package is now live on PyPI
 (`pip install self-harness`), so every doc that still pointed at the
-`git+https://github.com/jcaiagent7143-ui/harness-kit.git` install path has
+`git+https://github.com/jcaiagent7143-ui/harnessforge.git` install path has
 been updated. All MCP config examples now use `uvx --from "self-harness[mcp,openai]" aegis mcp`
 so non-Python users don't need to manage a venv at all.
 
@@ -546,7 +546,7 @@ If you installed via `pip install aegis-harness` against v0.4.0 docs:
     pip uninstall aegis-harness
     pip install self-harness          # or for everything: pip install 'self-harness[all]'
 
-GitHub repo URL is unchanged: <https://github.com/jcaiagent7143-ui/harness-kit>
+GitHub repo URL is unchanged: <https://github.com/jcaiagent7143-ui/harnessforge>
 
 ---
 

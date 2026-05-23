@@ -36,7 +36,7 @@ Enter
 Sleep 1200ms
 
 # ─── scene 2: one command bootstraps everything ─────────────────────
-Type "uvx harness-kit init --no-llm"
+Type "uvx harnessforge init --no-llm"
 Sleep 600ms
 Enter
 Sleep 6000ms

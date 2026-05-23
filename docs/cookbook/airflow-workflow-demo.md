@@ -10,7 +10,7 @@ git clone https://github.com/apache/airflow.git
 cd airflow
 git checkout <pinned-SHA>
 
-uvx harness-kit init --no-llm --blueprint workflow-agent
+uvx harnessforge init --no-llm --blueprint workflow-agent
 ```
 
 ## What gets written

@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-The latest minor release (`harness-kit 0.2.x`) is supported with
+The latest minor release (`harnessforge 0.2.x`) is supported with
 security fixes. Older versions and the legacy `self-harness` distribution
 are not.
 
@@ -17,7 +17,7 @@ are not.
 
 Use GitHub's private security advisory form:
 
-→ `https://github.com/jcaiagent7143-ui/harness-kit/security/advisories/new`
+→ `https://github.com/jcaiagent7143-ui/harnessforge/security/advisories/new`
 
 Or, if you can't use GitHub's flow, send a private message to the
 maintainer.
@@ -69,8 +69,8 @@ Also out of scope:
   (GitHub Actions on `pull_request` does this by default for first-time
   contributors). Don't run external-PR validators in a long-lived runner
   with secrets attached.
-- **Pin harness-kit** in your CI's `requirements.txt` so a supply-chain
-  compromise of a future harness-kit release doesn't auto-apply.
+- **Pin harnessforge** in your CI's `requirements.txt` so a supply-chain
+  compromise of a future harnessforge release doesn't auto-apply.
 - **Audit `profile.yaml` diffs in PR review** — `test_command` /
   `lint_command` changes are the only privileged fields.
 - **`harness mcp`** runs over stdio; treat the spawned process the same

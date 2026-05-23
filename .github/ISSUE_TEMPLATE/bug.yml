@@ -14,9 +14,9 @@ body:
       required: true
   - type: input
     attributes:
-      label: harness-kit version
+      label: harnessforge version
       description: Run `harness version`
-      placeholder: harness-kit 0.2.1
+      placeholder: harnessforge 0.2.1
     validations:
       required: true
   - type: input
@@ -53,4 +53,4 @@ body:
       label: Pre-flight
       options:
         - label: I checked `harness doctor` shows my env is set up correctly
-        - label: I'm on the latest harness-kit (`pip install -U harness-kit`)
+        - label: I'm on the latest harnessforge (`pip install -U harnessforge`)

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "harness-kit/support-agent/ticket-history",
+  "$id": "harnessforge/support-agent/ticket-history",
   "title": "Support ticket record",
   "type": "object",
   "required": ["ticket_id", "conversation_id", "intent", "priority", "status", "lineage"],

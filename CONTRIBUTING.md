@@ -1,4 +1,4 @@
-# Contributing to Harness Kit
+# Contributing to harnessforge
 
 Thanks for taking the time to look. This doc gets you from `git clone` to
 a green PR in under 15 minutes.
@@ -6,8 +6,8 @@ a green PR in under 15 minutes.
 ## TL;DR
 
 ```bash
-git clone https://github.com/jcaiagent7143-ui/harness-kit.git
-cd harness-kit
+git clone https://github.com/jcaiagent7143-ui/harnessforge.git
+cd harnessforge
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,proxy,mcp,openai]"
 pytest tests/harness         # 186+ tests; runs in ~4s
@@ -189,7 +189,7 @@ the full trust-model doc first.
 
 ## Releases
 
-Maintainers cut releases via the tag `harness-kit-vX.Y.Z`. Trusted
+Maintainers cut releases via the tag `harnessforge-vX.Y.Z`. Trusted
 Publishing pushes to PyPI on tag — no API tokens in repo.
 
 ## Code of Conduct

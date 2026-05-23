@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-      - name: Install harness-kit
+      - name: Install harnessforge
         run: pip install -e .
       - name: Run hero demo (${{ matrix.demo }})
         run: bash examples/hero/${{ matrix.demo }}/run.sh

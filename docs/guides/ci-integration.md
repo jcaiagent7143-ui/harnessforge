@@ -1,9 +1,9 @@
 # CI integration
 
-Two commands plug Harness Kit into CI cleanly:
+Two commands plug harnessforge into CI cleanly:
 
 ```yaml
-- run: pip install harness-kit
+- run: pip install harnessforge
 - run: harness sync --check    # 1: fail if generated files drifted from manifest
 - run: harness verify --json   # 2: fail if blueprint contract broken
 ```
@@ -47,7 +47,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install harness-kit
+      - run: pip install harnessforge
       - name: Check generated files are in sync with profile
         run: harness sync --check
       - name: Run blueprint validators

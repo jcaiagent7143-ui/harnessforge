@@ -1,6 +1,6 @@
 # Hero demos
 
-Reproducible end-to-end harness-kit demos against real public repos.
+Reproducible end-to-end harnessforge demos against real public repos.
 
 | Demo | Repo | Blueprint |
 |---|---|---|
