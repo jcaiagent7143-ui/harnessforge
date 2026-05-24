@@ -21,6 +21,16 @@ decompose → for each step: call tool with retry → check result → log → n
 - `SKILLS/call-tool-with-retry` — execute one step with exponential backoff + idempotency check.
 - `SKILLS/check-result` — verify the step's expected effect before moving on.
 
+## Setup
+
+**First-time test run**: this project uses pytest. If `pytest: command not found`, install it:
+
+```bash
+pip install pytest
+```
+
+That's the only setup step. Skip if pytest is already on your PATH.
+
 ## Commands you may run
 
 {% if profile.test_command -%}- Tests: `{{ profile.test_command }}`

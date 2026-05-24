@@ -22,6 +22,16 @@ classify intent → search KB → either answer or file a ticket → log lineage
    originating message. Priority follows the documented SLA matrix.
 4. **Escalate** if open > SLA (`SKILLS/escalate-if-unresolved`). Hand off to a human; preserve full lineage.
 
+## Setup
+
+**First-time test run**: this project uses pytest. If `pytest: command not found`, install it:
+
+```bash
+pip install pytest
+```
+
+That's the only setup step. Skip if pytest is already on your PATH.
+
 ## Commands you may run
 
 {% if profile.test_command -%}- Tests: `{{ profile.test_command }}`

@@ -20,6 +20,16 @@ citations fail validation.
 3. **Answer** — compose an answer that cites each claim by `chunk_id`. See `SKILLS/answer-with-citations/SKILL.md`.
 4. **Verify** — run `harness verify` to confirm citations resolve and schema validates.
 
+## Setup
+
+**First-time test run**: this project uses pytest. If `pytest: command not found`, install it:
+
+```bash
+pip install pytest
+```
+
+That's the only setup step. Skip if pytest is already on your PATH.
+
 ## Commands you may run
 
 {% if profile.test_command -%}- Tests: `{{ profile.test_command }}`

@@ -15,7 +15,7 @@ build-backend = "hatchling.build"
 # The `aegis` Python module ships in the same wheel as the internal
 # LLM I/O + sandbox + cache layer that `harness verify` uses.
 name = "harnessforge"
-version = "0.2.1"
+version = "0.2.2"
 description = "Universal harness layer for AI coding agents — one command sets up your repo for any agent (Claude Code, Cursor, Codex, Gemini CLI, Aider, OpenHarness)."
 readme = "README.md"
 license = { text = "MIT" }

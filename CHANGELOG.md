@@ -5,6 +5,63 @@ distribution (`self-harness`) are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [harnessforge 0.2.2] — 2026-05-24 — patch: 3 friction issues caught by the post-PyPI support-agent eval
+
+First public-release eval (real Claude Code subagent on a never-tested
+blueprint — `support-agent`) confirmed the headline thesis: the
+harness-equipped agent shipped **45 tests vs. 34** in **15 min vs. 20 min**
+on **420 LoC vs. 572 LoC**, and caught a real defect the control would have
+committed (task spec used `technical`/`feature_request`/`account` intent
+names; project validator enforces `bug`/`feature`/`other` — the harness
+agent read the validator, mapped, and shipped; the control didn't know
+the validator existed). Full eval artifacts in `/tmp/eval-control` and
+`/tmp/eval-harness` at eval time.
+
+The eval surfaced three small friction issues; v0.2.2 patches every one.
+
+### Fixed
+
+- **pytest-install friction across all 5 blueprints**. The harness eval
+  agent spent ~3 of 15 min locating a Python interpreter with pytest
+  because the generated AGENTS.md never mentioned pytest as a test
+  dependency. All 5 blueprints' `AGENTS.md.j2` now ship a `## Setup`
+  section: *"First-time test run: this project uses pytest. If `pytest:
+  command not found`, run `pip install pytest`. That's the only setup
+  step."* Eliminates 20% of the friction the eval observed.
+
+- **support-agent intent-vocabulary discoverability**. The validator's
+  canonical intent set (`question / bug / feature / billing / other`)
+  rarely matches a task brief's natural vocabulary (`technical /
+  feature_request / account`). v0.2.1's `classify-intent` SKILL.md only
+  listed the canonical set; agents had to read `scripts/verify_output.py`
+  separately to discover the constraint. SKILL.md now ships an explicit
+  mapping table with the canonical set in column 1 and common synonyms
+  (`technical → bug`, `feature_request → feature`, `account → other`,
+  ...) in column 3. Bumped SKILL `version: 1.0.0 → 1.1.0`.
+
+- **classify-intent confidence threshold documented as a tuning knob,
+  not a constant**. SKILL.md previously read "below 0.5 → escalate" as
+  a hard rule; the eval agent felt compelled to deviate to 0.45 and
+  document why. SKILL.md now ships a trade-off table: *lower (0.3–0.4)
+  when wrong answers are expensive (legal/financial/healthcare); raise
+  (0.6–0.7) when KB coverage is high and human bandwidth is scarce*.
+  Guides instead of dictates.
+
+### Added
+
+- **`tests/harness/unit/test_v022_eval_patches.py`** — 8 regression
+  tests guarding the three fixes against silent regression. The eval
+  found these gaps because they were undocumented invariants; the tests
+  make them invariants.
+
+### Methodology note
+
+The v0.2.2 eval design (parallel Claude Code subagents, blueprint not
+previously A/B'd, real PyPI install path, identical task prompt with no
+mention of harnessforge to either agent) is now the standard release-gate
+pattern. v0.3 will run the same pattern against `rag-agent` (last blueprint
+not yet eval'd).
+
 ## [harnessforge 0.2.1] — 2026-05-23 — patch: 5 polish issues caught by the v0.2 re-eval
 
 A second real-build A/B (Claude Code rebuilding the same stock-agent

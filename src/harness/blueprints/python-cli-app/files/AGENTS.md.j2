@@ -39,6 +39,16 @@ You ship small, focused diffs. You match existing style. You run the tests. You 
 
 If no command is listed for something you need, **ask** before inventing one. Don't pick `pytest` over `unittest` (or `ruff` over `flake8`) without confirming — that's a load-bearing project decision.
 
+## Setup
+
+**First-time test run**: this project uses pytest. If `pytest: command not found`, install it:
+
+```bash
+pip install pytest
+```
+
+That's the only setup step. Skip if pytest is already on your PATH.
+
 ## Conventions
 
 {% for c in profile.conventions -%}

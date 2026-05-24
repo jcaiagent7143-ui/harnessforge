@@ -37,6 +37,16 @@ fetch → compute → screen → flag
 
 The `no_trades_without_gate` validator scans your code for `order(`, `buy(`, `sell(`, `place_order(`, `submit_order(`, `cancel_order(`, etc. and **fails** if any of them appear without a preceding explicit gate (e.g. an `if approved_in_session:` check on a session-typed flag the user set).
 
+## Setup
+
+**First-time test run**: this project uses pytest. If `pytest: command not found`, install it:
+
+```bash
+pip install pytest
+```
+
+That's the only setup step. Skip if pytest is already on your PATH.
+
 ## Commands you may run
 
 {% if profile.test_command -%}- Tests: `{{ profile.test_command }}`
