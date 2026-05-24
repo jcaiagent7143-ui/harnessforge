@@ -155,6 +155,52 @@ pip install "harnessforge[mcp]"   # expose harnessforge itself as an MCP server
 
 ---
 
+## Benchmarks
+
+Real Claude Code subagents, parallel A/B, identical task. Control gets a
+bare repo; harness gets the same repo after `harnessforge init`. Neither
+agent is told harnessforge exists. Same 15-min time budget. Methodology +
+all three eval cycles + reproduction commands: **[BENCHMARKS.md](BENCHMARKS.md)**.
+
+### support-agent task — 2026-05-24
+
+| Metric | Control | + harnessforge | Δ |
+|---|---|---|---|
+| Time to ship | ~20 min (over budget) | ~15 min (within) | **−25%** |
+| Module LoC | 572 | **420** | **−27%** |
+| Tests written | 34 | **45** | **+32%** |
+| Defects shipped to CI | **1** | **0** | **prevented** |
+| Project-convention violations | 1 | 0 | prevented |
+
+The defect: control shipped intent values `{billing, technical, account, feature_request, other}` from the task brief. The project validator enforces `{question, bug, feature, billing, other}`. **Control's first CI push fails `harnessforge verify`.** Harness agent read the SKILL file's vocabulary mapping table, caught the mismatch, shipped with a translator. Quote from the harness agent verbatim:
+
+> *"Without those docs I'd have either silently used the brief's five names (and failed `harness verify`) or invented a different mapping."*
+
+### finance-agent task — 2026-05-22
+
+Three real, non-synthetic defects shipped by control, prevented by harness:
+
+| Bug | Control shipped | Harness shipped (source of fix) |
+|---|---|---|
+| RSI smoothing | Simple moving average | **Wilder smoothing** (`SKILLS/compute-technicals/SKILL.md` failure-modes section) |
+| 52-week-high calculation | `max(close[-252:])` | **`max(high[-252:])`** (same SKILL) |
+| Boundary cross detection | `prev < B and now > B` | **`prev <= B and now >= B`** (same SKILL) |
+| Trade behind config flag | Shipped | Refused — `no_trades_without_gate` validator failed CI before commit |
+
+Harness agent direct quote: *"This file alone saved me from a real defect."*
+
+### Friction-reduction (v0.2.1 → v0.2.2 re-eval)
+
+| Friction surfaced in v0.2.1 eval | v0.2.1 cost | v0.2.2 cost | Saved |
+|---|---|---|---|
+| Pytest install discovery | ~3 min | ~60 sec | **−66%** |
+| Intent-vocabulary mapping | manual | from SKILL table | **eliminated** |
+| Confidence-threshold tuning | ~2 min | ~30 sec | **−75%** |
+
+**Caveats** (full version in BENCHMARKS.md): n=2 subagents per task across 3 cycles — a consistent pattern, not statistical significance. Effect is largest on tasks ≥10 min; trivial edits don't justify the ~4-min context-loading cost. All eval workspaces preserved at `/tmp/eval-*` after running so anyone can `diff -r` and verify.
+
+---
+
 ## Five blueprints in 0.2.x
 
 Pick with `--blueprint`, or let the recommender choose based on inspection
